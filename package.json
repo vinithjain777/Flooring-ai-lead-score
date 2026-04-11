@@ -1,0 +1,17 @@
+{
+  "name": "gufy-flooring-lead-score",
+  "version": "1.0.0",
+  "description": "Free Leads Health Check quiz for flooring contractors",
+  "main": "index.html",
+  "scripts": {
+    "deploy": "vercel"
+  },
+  "keywords": [
+    "flooring",
+    "leads",
+    "quiz",
+    "marketing"
+  ],
+  "author": "Gufy",
+  "license": "MIT"
+}

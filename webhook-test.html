@@ -44,15 +44,16 @@
       const response = await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(testData)
+        body: JSON.stringify(testData),
+        mode: "no-cors"
       });
 
       console.log("Response:", response);
       
       output.innerHTML = `
         <h3 class="success">✅ Webhook Request Sent!</h3>
-        <p>Status: ${response.status}</p>
-        <p>Check Zapier dashboard - you should see the request arrive in a few seconds.</p>
+        <p>Status: ${response.status} (opaque with no-cors)</p>
+        <p><strong>Check Zapier dashboard now</strong> - the request should arrive in 1-2 seconds.</p>
         <p>Data sent:</p>
         <pre>${JSON.stringify(testData, null, 2)}</pre>
       `;
@@ -61,7 +62,7 @@
       output.innerHTML = `
         <h3 class="error">❌ Error Sending Webhook</h3>
         <p>${err.message}</p>
-        <pre>${err.stack}</pre>
+        <p>Try opening browser console (F12) to see full error.</p>
       `;
     }
   }

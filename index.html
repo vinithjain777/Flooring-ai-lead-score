@@ -1617,19 +1617,29 @@
             // Send to Zapier webhook
             const zapierWebhookUrl =
               "https://hooks.zapier.com/hooks/catch/22898586/u7q3fby/";
+            
             if (zapierWebhookUrl !== "YOUR_ZAPIER_WEBHOOK_URL_HERE") {
               try {
                 if (debugMode) console.log("🔗 Webhook URL:", zapierWebhookUrl);
-                const response = await fetch(zapierWebhookUrl, {
+                console.log("⏳ Webhook call started...");
+                
+                const fetchPromise = fetch(zapierWebhookUrl, {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify(leadData),
-                  mode: "no-cors",
                 });
-                if (debugMode)
-                  console.log("✅ Webhook response status:", response.status);
+
+                // Don't wait for response since we can't check it anyway
+                fetchPromise
+                  .then((res) => {
+                    console.log("✅ Webhook request sent successfully");
+                    if (debugMode) console.log("Response status:", res.status);
+                  })
+                  .catch((err) => {
+                    console.error("❌ Webhook fetch error:", err);
+                  });
               } catch (err) {
-                if (debugMode) console.error("❌ Webhook error:", err);
+                console.error("❌ Error preparing webhook:", err);
               }
             }
 

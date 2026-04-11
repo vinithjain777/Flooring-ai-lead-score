@@ -5,6 +5,7 @@ This document walks you through connecting the Gufy Lead Score form to GoHighLev
 ## Setup Steps
 
 ### 1. Create Zapier Webhook Trigger
+
 1. Go to [zapier.com](https://zapier.com) and sign into your account
 2. Click **"Create"** → **"Make a Zap"**
 3. Search for **"Webhooks by Zapier"**
@@ -17,21 +18,26 @@ This document walks you through connecting the Gufy Lead Score form to GoHighLev
 7. **Copy this URL** — you'll need it in Step 2
 
 ### 2. Update Your Application
+
 Replace the placeholder in `index.html`:
 
 Find this line (around line 595):
+
 ```javascript
-const zapierWebhookUrl='YOUR_ZAPIER_WEBHOOK_URL_HERE';
+const zapierWebhookUrl = "YOUR_ZAPIER_WEBHOOK_URL_HERE";
 ```
 
 Replace with your actual Zapier webhook URL:
+
 ```javascript
-const zapierWebhookUrl='https://hooks.zapier.com/hooks/catch/12345678/abc123xyz/';
+const zapierWebhookUrl =
+  "https://hooks.zapier.com/hooks/catch/12345678/abc123xyz/";
 ```
 
 Alternatively, use environment variables by creating a `.env` file (see `.env.example`)
 
 ### 3. Create GHL Action in Zapier
+
 In the same Zap from Step 1, after the Webhook trigger:
 
 1. Click **"+"** to add an action
@@ -47,6 +53,7 @@ In the same Zap from Step 1, after the Webhook trigger:
    - `timestamp` → (custom field - optional)
 
 Example mapping:
+
 ```
 First Name: name
 Phone: phone
@@ -57,6 +64,7 @@ Custom Field (Quiz Timestamp): timestamp
 ```
 
 ### 4. (Optional) Add to Pipeline
+
 To automatically add contacts to a specific pipeline/campaign:
 
 1. In the GHL action, find the **"Add to Pipeline"** option
@@ -64,6 +72,7 @@ To automatically add contacts to a specific pipeline/campaign:
 3. Choose the default campaign or status
 
 ### 5. Test Your Zap
+
 1. Click **"Test"** in Zapier
 2. Go back to your app
 3. Submit the form with test data
@@ -71,6 +80,7 @@ To automatically add contacts to a specific pipeline/campaign:
 5. Verify the contact appears in GoHighLevel
 
 ### 6. Turn On Your Zap
+
 1. Click the toggle in top-left to **"Turn on"** your Zap
 2. Your integration is now live!
 
@@ -101,16 +111,19 @@ When a form is submitted, the following data is sent to Zapier → GHL:
 ## Troubleshooting
 
 ### Webhook not firing?
+
 - Check that your Zapier URL is correct (no typos)
 - Verify Zap is turned ON in Zapier
 - Check browser console for errors (F12 → Console)
 
 ### Contacts not appearing in GHL?
+
 - Verify field mappings are correct in Zapier
 - Check GHL for duplicate contact rules
 - Ensure GHL account has API permissions
 
 ### Slow form submission?
+
 - Webhook calls are async (non-blocking) on purpose
 - User won't see delay before Calendly redirect
 
@@ -128,6 +141,7 @@ To map the quiz score or answers to GHL:
 ## Support
 
 For issues:
+
 - Zapier Help: [zapier.com/help](https://zapier.com/help)
 - GHL Support: [gomaximize.gohighlevel.com/support](https://gomaximize.gohighlevel.com/support)
 - Check webhook delivery in Zapier's task history

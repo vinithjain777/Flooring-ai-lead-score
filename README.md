@@ -14,12 +14,14 @@ A free lead health scoring quiz for flooring contractors to evaluate their pipel
 ## Quick Start
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/vinithjain777/Flooring-ai-lead-score.git
 cd Flooring-ai-lead-score
 ```
 
 2. Open `index.html` in a browser or deploy to Vercel:
+
 ```bash
 npm install -g vercel
 vercel
@@ -28,6 +30,7 @@ vercel
 ## Deployment to Vercel
 
 ### Option 1: GitHub Integration (Recommended)
+
 1. Push this repo to GitHub
 2. Go to [vercel.com](https://vercel.com)
 3. Click "New Project" → Import Git Repository
@@ -35,6 +38,7 @@ vercel
 5. Click "Deploy"
 
 ### Option 2: Vercel CLI
+
 ```bash
 npm install -g vercel
 cd your-project-directory
@@ -42,6 +46,7 @@ vercel
 ```
 
 ### Option 3: Direct Upload
+
 1. Go to [vercel.com/new](https://vercel.com/new)
 2. Drag and drop this folder or upload files
 3. Click "Deploy"
@@ -50,12 +55,14 @@ vercel
 
 **Calendly Integration:**
 Update the Calendly URL in the JavaScript code:
+
 ```javascript
-const calendlyUrl='https://calendly.com/YOUR-USERNAME/strategy-call';
+const calendlyUrl = "https://calendly.com/YOUR-USERNAME/strategy-call";
 ```
 
 **Environment Variables:**
 Create a `.env.local` file if using any external APIs:
+
 ```
 VITE_CALENDLY_URL=https://calendly.com/your-username/strategy-call
 ```
@@ -87,14 +94,18 @@ VITE_CALENDLY_URL=https://calendly.com/your-username/strategy-call
 ## Customization
 
 ### Update Branding
+
 Edit the logo, colors, and company name in:
+
 - CSS variables (`:root` section)
 - HTML content (nav, hero section, footer)
 
 ### Modify Quiz Questions
+
 Edit the question panels in the HTML (Q1–Q7 sections)
 
 ### Adjust Scoring Logic
+
 Modify the `categories` array and `insights` object in the JavaScript
 
 ## License

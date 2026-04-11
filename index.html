@@ -1,668 +1,1708 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gufy — Free Leads Health Check</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300..700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --font-display: 'Instrument Serif', Georgia, serif;
-  --font-body: 'DM Sans', 'Helvetica Neue', sans-serif;
-  --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
-  --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
-  --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
-  --text-lg:   clamp(1.125rem, 1rem    + 0.75vw, 1.5rem);
-  --text-xl:   clamp(1.5rem,   1.2rem  + 1.25vw, 2.25rem);
-  --text-2xl:  clamp(2rem,     1.2rem  + 2.5vw,  3.5rem);
-  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.25rem;
-  --space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;--space-12:3rem;--space-16:4rem;--space-20:5rem;
-  --radius-sm:.375rem;--radius-md:.5rem;--radius-lg:.75rem;--radius-xl:1rem;--radius-full:9999px;
-  --transition:180ms cubic-bezier(0.16,1,0.3,1);
-  --content-default:800px;
-}
-:root,[data-theme="light"]{
-  --bg:#f7f6f2;--surface:#ffffff;--surface-2:#f9f8f5;--surface-offset:#f0ede8;
-  --divider:#e4e1db;--border:oklch(0.3 0.01 60/0.12);
-  --text:#1e1c18;--text-muted:#6b6a66;--text-faint:#b0afa9;--text-inv:#ffffff;
-  --accent:#1d5fa8;--accent-h:#164d8a;--accent-lite:#eaf1fb;
-  --green:#2e7d32;--green-lite:#e8f5e9;--amber:#b45309;--amber-lite:#fffbeb;
-  --red:#c62828;--red-lite:#ffebee;
-  --shadow-sm:0 1px 3px oklch(0.2 0.02 60/0.07);
-  --shadow-md:0 4px 16px oklch(0.2 0.02 60/0.09);
-  --shadow-lg:0 12px 40px oklch(0.2 0.02 60/0.13);
-}
-[data-theme="dark"]{
-  --bg:#111214;--surface:#18191c;--surface-2:#1f2023;--surface-offset:#26272b;
-  --divider:#2e2f33;--border:oklch(0.9 0.01 240/0.1);
-  --text:#d4d5d8;--text-muted:#7a7c82;--text-faint:#47494f;--text-inv:#111214;
-  --accent:#5b9bd5;--accent-h:#7ab3e0;--accent-lite:#1a2840;
-  --green:#66bb6a;--green-lite:#1b2e1c;--amber:#fbbf24;--amber-lite:#2d2310;
-  --red:#ef5350;--red-lite:#2d1616;
-  --shadow-sm:0 1px 3px oklch(0 0 0/0.3);--shadow-md:0 4px 16px oklch(0 0 0/0.4);--shadow-lg:0 12px 40px oklch(0 0 0/0.5);
-}
-@media(prefers-color-scheme:dark){:root:not([data-theme]){
-  --bg:#111214;--surface:#18191c;--surface-2:#1f2023;--surface-offset:#26272b;
-  --divider:#2e2f33;--border:oklch(0.9 0.01 240/0.1);
-  --text:#d4d5d8;--text-muted:#7a7c82;--text-faint:#47494f;--text-inv:#111214;
-  --accent:#5b9bd5;--accent-h:#7ab3e0;--accent-lite:#1a2840;
-  --green:#66bb6a;--green-lite:#1b2e1c;--amber:#fbbf24;--amber-lite:#2d2310;
-  --red:#ef5350;--red-lite:#2d1616;
-  --shadow-sm:0 1px 3px oklch(0 0 0/0.3);--shadow-md:0 4px 16px oklch(0 0 0/0.4);--shadow-lg:0 12px 40px oklch(0 0 0/0.5);
-}}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
-body{min-height:100dvh;font-family:var(--font-body);font-size:var(--text-base);color:var(--text);background:var(--bg);line-height:1.65;}
-img{display:block;max-width:100%;}
-button{cursor:pointer;font:inherit;border:none;background:none;}
-input,select,textarea{font:inherit;color:inherit;}
-h1,h2,h3,h4{line-height:1.2;text-wrap:balance;}
-p,li{text-wrap:pretty;max-width:65ch;}
-::selection{background:oklch(from var(--accent) l c h/0.2);}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:var(--radius-sm);}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gufy — Free Leads Health Check</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'><rect width='28' height='28' rx='7' fill='%231d5fa8'/><path d='M8 14a6 6 0 1 1 8.5 5.5V16h-2v5.5A6 6 0 0 1 8 14z' fill='white'/><circle cx='14' cy='14' r='2' fill='white'/></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --font-display: "Instrument Serif", Georgia, serif;
+        --font-body: "DM Sans", "Helvetica Neue", sans-serif;
+        --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+        --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+        --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+        --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+        --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+        --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+        --space-1: 0.25rem;
+        --space-2: 0.5rem;
+        --space-3: 0.75rem;
+        --space-4: 1rem;
+        --space-5: 1.25rem;
+        --space-6: 1.5rem;
+        --space-8: 2rem;
+        --space-10: 2.5rem;
+        --space-12: 3rem;
+        --space-16: 4rem;
+        --space-20: 5rem;
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 0.75rem;
+        --radius-xl: 1rem;
+        --radius-full: 9999px;
+        --transition: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+        --content-default: 800px;
+      }
+      :root,
+      [data-theme="light"] {
+        --bg: #f7f6f2;
+        --surface: #ffffff;
+        --surface-2: #f9f8f5;
+        --surface-offset: #f0ede8;
+        --divider: #e4e1db;
+        --border: oklch(0.3 0.01 60/0.12);
+        --text: #1e1c18;
+        --text-muted: #6b6a66;
+        --text-faint: #b0afa9;
+        --text-inv: #ffffff;
+        --accent: #1d5fa8;
+        --accent-h: #164d8a;
+        --accent-lite: #eaf1fb;
+        --green: #2e7d32;
+        --green-lite: #e8f5e9;
+        --amber: #b45309;
+        --amber-lite: #fffbeb;
+        --red: #c62828;
+        --red-lite: #ffebee;
+        --shadow-sm: 0 1px 3px oklch(0.2 0.02 60/0.07);
+        --shadow-md: 0 4px 16px oklch(0.2 0.02 60/0.09);
+        --shadow-lg: 0 12px 40px oklch(0.2 0.02 60/0.13);
+      }
+      [data-theme="dark"] {
+        --bg: #111214;
+        --surface: #18191c;
+        --surface-2: #1f2023;
+        --surface-offset: #26272b;
+        --divider: #2e2f33;
+        --border: oklch(0.9 0.01 240/0.1);
+        --text: #d4d5d8;
+        --text-muted: #7a7c82;
+        --text-faint: #47494f;
+        --text-inv: #111214;
+        --accent: #5b9bd5;
+        --accent-h: #7ab3e0;
+        --accent-lite: #1a2840;
+        --green: #66bb6a;
+        --green-lite: #1b2e1c;
+        --amber: #fbbf24;
+        --amber-lite: #2d2310;
+        --red: #ef5350;
+        --red-lite: #2d1616;
+        --shadow-sm: 0 1px 3px oklch(0 0 0/0.3);
+        --shadow-md: 0 4px 16px oklch(0 0 0/0.4);
+        --shadow-lg: 0 12px 40px oklch(0 0 0/0.5);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]) {
+          --bg: #111214;
+          --surface: #18191c;
+          --surface-2: #1f2023;
+          --surface-offset: #26272b;
+          --divider: #2e2f33;
+          --border: oklch(0.9 0.01 240/0.1);
+          --text: #d4d5d8;
+          --text-muted: #7a7c82;
+          --text-faint: #47494f;
+          --text-inv: #111214;
+          --accent: #5b9bd5;
+          --accent-h: #7ab3e0;
+          --accent-lite: #1a2840;
+          --green: #66bb6a;
+          --green-lite: #1b2e1c;
+          --amber: #fbbf24;
+          --amber-lite: #2d2310;
+          --red: #ef5350;
+          --red-lite: #2d1616;
+          --shadow-sm: 0 1px 3px oklch(0 0 0/0.3);
+          --shadow-md: 0 4px 16px oklch(0 0 0/0.4);
+          --shadow-lg: 0 12px 40px oklch(0 0 0/0.5);
+        }
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        min-height: 100dvh;
+        font-family: var(--font-body);
+        font-size: var(--text-base);
+        color: var(--text);
+        background: var(--bg);
+        line-height: 1.65;
+      }
+      img {
+        display: block;
+        max-width: 100%;
+      }
+      button {
+        cursor: pointer;
+        font: inherit;
+        border: none;
+        background: none;
+      }
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        line-height: 1.2;
+        text-wrap: balance;
+      }
+      p,
+      li {
+        text-wrap: pretty;
+        max-width: 65ch;
+      }
+      ::selection {
+        background: oklch(from var(--accent) l c h/0.2);
+      }
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: var(--radius-sm);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
 
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:color-mix(in oklab,var(--bg) 85%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:var(--space-3) var(--space-6);display:flex;align-items:center;justify-content:space-between;}
-.logo{display:flex;align-items:center;gap:var(--space-2);font-family:var(--font-display);font-size:var(--text-lg);color:var(--text);text-decoration:none;font-weight:600;}
-.logo svg{color:var(--accent);}
-.theme-btn{width:36px;height:36px;border-radius:var(--radius-full);display:grid;place-items:center;color:var(--text-muted);border:1px solid var(--border);transition:background var(--transition),color var(--transition);}
-.theme-btn:hover{background:var(--surface-offset);color:var(--text);}
+      /* NAV */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: color-mix(in oklab, var(--bg) 85%, transparent);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border);
+        padding: var(--space-3) var(--space-6);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: var(--font-display);
+        font-size: var(--text-lg);
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .logo svg {
+        color: var(--accent);
+      }
+      .theme-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-full);
+        display: grid;
+        place-items: center;
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+        transition:
+          background var(--transition),
+          color var(--transition);
+      }
+      .theme-btn:hover {
+        background: var(--surface-offset);
+        color: var(--text);
+      }
 
-/* PAGE */
-.page-wrap{max-width:var(--content-default);margin-inline:auto;padding-inline:var(--space-4);padding-block:var(--space-8);}
+      /* PAGE */
+      .page-wrap {
+        max-width: var(--content-default);
+        margin-inline: auto;
+        padding-inline: var(--space-4);
+        padding-block: var(--space-8);
+      }
 
-/* HERO */
-.hero{text-align:center;padding-block:clamp(var(--space-12),8vw,var(--space-20));padding-inline:var(--space-4);}
-.hero-badge{display:inline-flex;align-items:center;gap:var(--space-2);background:var(--accent-lite);color:var(--accent);font-size:var(--text-xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);margin-bottom:var(--space-5);}
-.hero h1{font-family:var(--font-display);font-size:var(--text-2xl);color:var(--text);margin-bottom:var(--space-4);}
-.hero h1 em{font-style:italic;color:var(--accent);}
-.hero p{font-size:var(--text-lg);color:var(--text-muted);max-width:52ch;margin-inline:auto;margin-bottom:var(--space-8);}
-.hero-stats{display:flex;flex-wrap:wrap;gap:var(--space-8);justify-content:center;margin-bottom:var(--space-8);}
-.hero-stat{text-align:center;}
-.hero-stat strong{display:block;font-size:var(--text-xl);font-family:var(--font-display);color:var(--text);line-height:1;}
-.hero-stat span{font-size:var(--text-xs);color:var(--text-muted);}
+      /* HERO */
+      .hero {
+        text-align: center;
+        padding-block: clamp(var(--space-12), 8vw, var(--space-20));
+        padding-inline: var(--space-4);
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        background: var(--accent-lite);
+        color: var(--accent);
+        font-size: var(--text-xs);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        margin-bottom: var(--space-5);
+      }
+      .hero h1 {
+        font-family: var(--font-display);
+        font-size: var(--text-2xl);
+        color: var(--text);
+        margin-bottom: var(--space-4);
+      }
+      .hero h1 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .hero p {
+        font-size: var(--text-lg);
+        color: var(--text-muted);
+        max-width: 52ch;
+        margin-inline: auto;
+        margin-bottom: var(--space-8);
+      }
+      .hero-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-8);
+        justify-content: center;
+        margin-bottom: var(--space-8);
+      }
+      .hero-stat {
+        text-align: center;
+      }
+      .hero-stat strong {
+        display: block;
+        font-size: var(--text-xl);
+        font-family: var(--font-display);
+        color: var(--text);
+        line-height: 1;
+      }
+      .hero-stat span {
+        font-size: var(--text-xs);
+        color: var(--text-muted);
+      }
 
-/* QUIZ CARD */
-.quiz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow-md);overflow:hidden;}
+      /* QUIZ CARD */
+      .quiz-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+      }
 
-/* PROGRESS */
-.progress-bar-wrap{padding:var(--space-5) var(--space-6) 0;}
-.progress-label{display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--text-muted);margin-bottom:var(--space-2);}
-.progress-track{height:4px;background:var(--surface-offset);border-radius:var(--radius-full);overflow:hidden;}
-.progress-fill{height:100%;background:var(--accent);border-radius:var(--radius-full);transition:width .5s cubic-bezier(0.16,1,0.3,1);}
+      /* PROGRESS */
+      .progress-bar-wrap {
+        padding: var(--space-5) var(--space-6) 0;
+      }
+      .progress-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: var(--text-xs);
+        color: var(--text-muted);
+        margin-bottom: var(--space-2);
+      }
+      .progress-track {
+        height: 4px;
+        background: var(--surface-offset);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: var(--radius-full);
+        transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
 
-/* QUESTION */
-.question-panel{padding:var(--space-6) var(--space-8);display:none;animation:fadeUp .35s cubic-bezier(0.16,1,0.3,1);}
-.question-panel.active{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-.q-step{font-size:var(--text-xs);font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.07em;margin-bottom:var(--space-2);}
-.q-text{font-family:var(--font-display);font-size:var(--text-xl);color:var(--text);margin-bottom:var(--space-6);line-height:1.25;}
-.options{display:flex;flex-direction:column;gap:var(--space-3);}
-.option-btn{display:flex;align-items:flex-start;gap:var(--space-3);padding:var(--space-4) var(--space-5);background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);text-align:left;transition:background var(--transition),border-color var(--transition),box-shadow var(--transition);}
-.option-btn:hover{background:var(--accent-lite);border-color:oklch(from var(--accent) l c h/0.35);box-shadow:var(--shadow-sm);}
-.option-btn.selected{background:var(--accent-lite);border-color:var(--accent);box-shadow:0 0 0 2px oklch(from var(--accent) l c h/0.18);}
-.option-letter{flex-shrink:0;width:28px;height:28px;border-radius:var(--radius-sm);background:var(--surface-offset);border:1px solid var(--border);display:grid;place-items:center;font-size:var(--text-xs);font-weight:700;color:var(--text-muted);transition:background var(--transition),color var(--transition);}
-.option-btn.selected .option-letter,.option-btn:hover .option-letter{background:var(--accent);color:var(--text-inv);border-color:var(--accent);}
-.option-text{font-size:var(--text-base);color:var(--text);padding-top:2px;}
+      /* QUESTION */
+      .question-panel {
+        padding: var(--space-6) var(--space-8);
+        display: none;
+        animation: fadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .question-panel.active {
+        display: block;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .q-step {
+        font-size: var(--text-xs);
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin-bottom: var(--space-2);
+      }
+      .q-text {
+        font-family: var(--font-display);
+        font-size: var(--text-xl);
+        color: var(--text);
+        margin-bottom: var(--space-6);
+        line-height: 1.25;
+      }
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+      }
+      .option-btn {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
+        padding: var(--space-4) var(--space-5);
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        text-align: left;
+        transition:
+          background var(--transition),
+          border-color var(--transition),
+          box-shadow var(--transition);
+      }
+      .option-btn:hover {
+        background: var(--accent-lite);
+        border-color: oklch(from var(--accent) l c h/0.35);
+        box-shadow: var(--shadow-sm);
+      }
+      .option-btn.selected {
+        background: var(--accent-lite);
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px oklch(from var(--accent) l c h/0.18);
+      }
+      .option-letter {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: var(--radius-sm);
+        background: var(--surface-offset);
+        border: 1px solid var(--border);
+        display: grid;
+        place-items: center;
+        font-size: var(--text-xs);
+        font-weight: 700;
+        color: var(--text-muted);
+        transition:
+          background var(--transition),
+          color var(--transition);
+      }
+      .option-btn.selected .option-letter,
+      .option-btn:hover .option-letter {
+        background: var(--accent);
+        color: var(--text-inv);
+        border-color: var(--accent);
+      }
+      .option-text {
+        font-size: var(--text-base);
+        color: var(--text);
+        padding-top: 2px;
+      }
 
-/* FOOTER / NEXT */
-.q-footer{padding:var(--space-4) var(--space-8) var(--space-6);display:flex;justify-content:flex-end;border-top:1px solid var(--divider);}
-.btn-next{display:inline-flex;align-items:center;gap:var(--space-2);padding:var(--space-3) var(--space-6);background:var(--accent);color:var(--text-inv);border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:700;box-shadow:0 2px 8px oklch(from var(--accent) l c h/0.3);transition:background var(--transition),transform var(--transition),box-shadow var(--transition);}
-.btn-next:hover{background:var(--accent-h);transform:translateY(-1px);box-shadow:0 4px 16px oklch(from var(--accent) l c h/0.4);}
-.btn-next:active{transform:translateY(0);}
-.btn-next:disabled{opacity:.4;pointer-events:none;}
+      /* FOOTER / NEXT */
+      .q-footer {
+        padding: var(--space-4) var(--space-8) var(--space-6);
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid var(--divider);
+      }
+      .btn-next {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-6);
+        background: var(--accent);
+        color: var(--text-inv);
+        border-radius: var(--radius-full);
+        font-size: var(--text-sm);
+        font-weight: 700;
+        box-shadow: 0 2px 8px oklch(from var(--accent) l c h/0.3);
+        transition:
+          background var(--transition),
+          transform var(--transition),
+          box-shadow var(--transition);
+      }
+      .btn-next:hover {
+        background: var(--accent-h);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px oklch(from var(--accent) l c h/0.4);
+      }
+      .btn-next:active {
+        transform: translateY(0);
+      }
+      .btn-next:disabled {
+        opacity: 0.4;
+        pointer-events: none;
+      }
 
-/* RESULT */
-#result-panel{display:none;padding:var(--space-8);animation:fadeUp .4s cubic-bezier(0.16,1,0.3,1);}
-#result-panel.active{display:block;}
-.score-ring-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:var(--space-8);}
-.score-ring{position:relative;width:140px;height:140px;margin-bottom:var(--space-4);}
-.score-ring svg{transform:rotate(-90deg);}
-.score-ring-bg{fill:none;stroke:var(--surface-offset);stroke-width:10;}
-.score-ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1);}
-.score-number{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--font-display);font-size:clamp(2rem,6vw,2.75rem);font-weight:700;line-height:1;}
-.score-grade{font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-1);}
-.score-sub{font-size:var(--text-sm);color:var(--text-muted);text-align:center;max-width:44ch;}
+      /* RESULT */
+      #result-panel {
+        display: none;
+        padding: var(--space-8);
+        animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #result-panel.active {
+        display: block;
+      }
+      .score-ring-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: var(--space-8);
+      }
+      .score-ring {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        margin-bottom: var(--space-4);
+      }
+      .score-ring svg {
+        transform: rotate(-90deg);
+      }
+      .score-ring-bg {
+        fill: none;
+        stroke: var(--surface-offset);
+        stroke-width: 10;
+      }
+      .score-ring-fill {
+        fill: none;
+        stroke-width: 10;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .score-number {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 6vw, 2.75rem);
+        font-weight: 700;
+        line-height: 1;
+      }
+      .score-grade {
+        font-size: var(--text-lg);
+        font-weight: 700;
+        margin-bottom: var(--space-1);
+      }
+      .score-sub {
+        font-size: var(--text-sm);
+        color: var(--text-muted);
+        text-align: center;
+        max-width: 44ch;
+      }
 
-/* BREAKDOWN */
-.breakdown{margin-bottom:var(--space-8);}
-.breakdown h2{font-family:var(--font-display);font-size:var(--text-xl);margin-bottom:var(--space-5);}
-.breakdown-list{display:flex;flex-direction:column;gap:var(--space-3);}
-.breakdown-item{display:grid;grid-template-columns:1fr auto;align-items:center;gap:var(--space-3);padding:var(--space-4) var(--space-5);background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);}
-.bi-label{font-size:var(--text-sm);font-weight:500;}
-.bi-score{font-size:var(--text-xs);font-weight:700;padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);}
-.bi-bar-row{grid-column:1/-1;}
-.bi-bar-track{height:5px;background:var(--surface-offset);border-radius:var(--radius-full);overflow:hidden;}
-.bi-bar-fill{height:100%;border-radius:var(--radius-full);transition:width 1s .3s cubic-bezier(0.16,1,0.3,1);}
-.tag-good .bi-score{background:var(--green-lite);color:var(--green);}
-.tag-good .bi-bar-fill{background:var(--green);}
-.tag-warn .bi-score{background:var(--amber-lite);color:var(--amber);}
-.tag-warn .bi-bar-fill{background:var(--amber);}
-.tag-bad  .bi-score{background:var(--red-lite);color:var(--red);}
-.tag-bad  .bi-bar-fill{background:var(--red);}
+      /* BREAKDOWN */
+      .breakdown {
+        margin-bottom: var(--space-8);
+      }
+      .breakdown h2 {
+        font-family: var(--font-display);
+        font-size: var(--text-xl);
+        margin-bottom: var(--space-5);
+      }
+      .breakdown-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+      }
+      .breakdown-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-4) var(--space-5);
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+      }
+      .bi-label {
+        font-size: var(--text-sm);
+        font-weight: 500;
+      }
+      .bi-score {
+        font-size: var(--text-xs);
+        font-weight: 700;
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+      }
+      .bi-bar-row {
+        grid-column: 1/-1;
+      }
+      .bi-bar-track {
+        height: 5px;
+        background: var(--surface-offset);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+      }
+      .bi-bar-fill {
+        height: 100%;
+        border-radius: var(--radius-full);
+        transition: width 1s 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .tag-good .bi-score {
+        background: var(--green-lite);
+        color: var(--green);
+      }
+      .tag-good .bi-bar-fill {
+        background: var(--green);
+      }
+      .tag-warn .bi-score {
+        background: var(--amber-lite);
+        color: var(--amber);
+      }
+      .tag-warn .bi-bar-fill {
+        background: var(--amber);
+      }
+      .tag-bad .bi-score {
+        background: var(--red-lite);
+        color: var(--red);
+      }
+      .tag-bad .bi-bar-fill {
+        background: var(--red);
+      }
 
-/* INSIGHTS */
-.insights{margin-bottom:var(--space-8);}
-.insights h2{font-family:var(--font-display);font-size:var(--text-xl);margin-bottom:var(--space-5);}
-.insight-card{display:flex;gap:var(--space-4);padding:var(--space-5);border-radius:var(--radius-lg);border:1px solid var(--border);margin-bottom:var(--space-3);background:var(--surface-2);}
-.insight-icon{flex-shrink:0;width:38px;height:38px;border-radius:var(--radius-md);display:grid;place-items:center;font-size:20px;}
-.insight-card h3{font-size:var(--text-base);font-weight:700;margin-bottom:var(--space-1);}
-.insight-card p{font-size:var(--text-sm);color:var(--text-muted);max-width:none;}
-.insight-fix{display:inline-block;margin-top:var(--space-2);font-size:var(--text-xs);font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;}
-.insight-bad .insight-icon{background:var(--red-lite);color:var(--red);}
-.insight-warn .insight-icon{background:var(--amber-lite);color:var(--amber);}
-.insight-good .insight-icon{background:var(--green-lite);color:var(--green);}
+      /* INSIGHTS */
+      .insights {
+        margin-bottom: var(--space-8);
+      }
+      .insights h2 {
+        font-family: var(--font-display);
+        font-size: var(--text-xl);
+        margin-bottom: var(--space-5);
+      }
+      .insight-card {
+        display: flex;
+        gap: var(--space-4);
+        padding: var(--space-5);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        margin-bottom: var(--space-3);
+        background: var(--surface-2);
+      }
+      .insight-icon {
+        flex-shrink: 0;
+        width: 38px;
+        height: 38px;
+        border-radius: var(--radius-md);
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+      }
+      .insight-card h3 {
+        font-size: var(--text-base);
+        font-weight: 700;
+        margin-bottom: var(--space-1);
+      }
+      .insight-card p {
+        font-size: var(--text-sm);
+        color: var(--text-muted);
+        max-width: none;
+      }
+      .insight-fix {
+        display: inline-block;
+        margin-top: var(--space-2);
+        font-size: var(--text-xs);
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .insight-bad .insight-icon {
+        background: var(--red-lite);
+        color: var(--red);
+      }
+      .insight-warn .insight-icon {
+        background: var(--amber-lite);
+        color: var(--amber);
+      }
+      .insight-good .insight-icon {
+        background: var(--green-lite);
+        color: var(--green);
+      }
 
-/* CTA */
-.cta-block{background:var(--surface-offset);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-8);text-align:center;margin-bottom:var(--space-6);}
-.cta-block h2{font-family:var(--font-display);font-size:var(--text-xl);margin-bottom:var(--space-2);}
-.cta-block>p{font-size:var(--text-base);color:var(--text-muted);margin-inline:auto;margin-bottom:var(--space-6);}
-.lead-form{display:flex;flex-direction:column;gap:var(--space-3);max-width:460px;margin-inline:auto;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);}
-.field-wrap{display:flex;flex-direction:column;gap:var(--space-1);}
-.field-wrap label{font-size:var(--text-xs);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;}
-.field-wrap input{padding:var(--space-3) var(--space-4);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);font-size:var(--text-sm);transition:border-color var(--transition),box-shadow var(--transition);}
-.field-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 3px oklch(from var(--accent) l c h/0.18);outline:none;}
-.btn-cta{display:flex;align-items:center;justify-content:center;gap:var(--space-2);width:100%;padding:var(--space-4) var(--space-6);background:var(--accent);color:var(--text-inv);border-radius:var(--radius-full);font-size:var(--text-base);font-weight:700;box-shadow:0 4px 20px oklch(from var(--accent) l c h/0.35);transition:background var(--transition),transform var(--transition),box-shadow var(--transition);}
-.btn-cta:hover{background:var(--accent-h);transform:translateY(-2px);box-shadow:0 8px 28px oklch(from var(--accent) l c h/0.45);}
-.btn-cta:active{transform:translateY(0);}
-.cta-note{font-size:var(--text-xs);color:var(--text-faint);margin-top:var(--space-2);}
-.retake-btn{display:block;width:fit-content;margin-inline:auto;font-size:var(--text-sm);color:var(--text-muted);text-decoration:underline;text-underline-offset:3px;transition:color var(--transition);}
-.retake-btn:hover{color:var(--text);}
+      /* CTA */
+      .cta-block {
+        background: var(--surface-offset);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-8);
+        text-align: center;
+        margin-bottom: var(--space-6);
+      }
+      .cta-block h2 {
+        font-family: var(--font-display);
+        font-size: var(--text-xl);
+        margin-bottom: var(--space-2);
+      }
+      .cta-block > p {
+        font-size: var(--text-base);
+        color: var(--text-muted);
+        margin-inline: auto;
+        margin-bottom: var(--space-6);
+      }
+      .lead-form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        max-width: 460px;
+        margin-inline: auto;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-3);
+      }
+      .field-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+      .field-wrap label {
+        font-size: var(--text-xs);
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .field-wrap input {
+        padding: var(--space-3) var(--space-4);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+        transition:
+          border-color var(--transition),
+          box-shadow var(--transition);
+      }
+      .field-wrap input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px oklch(from var(--accent) l c h/0.18);
+        outline: none;
+      }
+      .btn-cta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        width: 100%;
+        padding: var(--space-4) var(--space-6);
+        background: var(--accent);
+        color: var(--text-inv);
+        border-radius: var(--radius-full);
+        font-size: var(--text-base);
+        font-weight: 700;
+        box-shadow: 0 4px 20px oklch(from var(--accent) l c h/0.35);
+        transition:
+          background var(--transition),
+          transform var(--transition),
+          box-shadow var(--transition);
+      }
+      .btn-cta:hover {
+        background: var(--accent-h);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px oklch(from var(--accent) l c h/0.45);
+      }
+      .btn-cta:active {
+        transform: translateY(0);
+      }
+      .cta-note {
+        font-size: var(--text-xs);
+        color: var(--text-faint);
+        margin-top: var(--space-2);
+      }
+      .retake-btn {
+        display: block;
+        width: fit-content;
+        margin-inline: auto;
+        font-size: var(--text-sm);
+        color: var(--text-muted);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: color var(--transition);
+      }
+      .retake-btn:hover {
+        color: var(--text);
+      }
 
-/* THANK YOU */
-#thankyou-panel{display:none;padding:var(--space-12) var(--space-8);text-align:center;animation:fadeUp .4s cubic-bezier(0.16,1,0.3,1);}
-#thankyou-panel.active{display:block;}
-.ty-icon{width:72px;height:72px;background:var(--green-lite);border-radius:var(--radius-full);display:grid;place-items:center;font-size:32px;margin-inline:auto;margin-bottom:var(--space-6);}
-#thankyou-panel h2{font-family:var(--font-display);font-size:var(--text-xl);margin-bottom:var(--space-3);}
-#thankyou-panel p{color:var(--text-muted);max-width:44ch;margin-inline:auto;}
+      /* THANK YOU */
+      #thankyou-panel {
+        display: none;
+        padding: var(--space-12) var(--space-8);
+        text-align: center;
+        animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #thankyou-panel.active {
+        display: block;
+      }
+      .ty-icon {
+        width: 72px;
+        height: 72px;
+        background: var(--green-lite);
+        border-radius: var(--radius-full);
+        display: grid;
+        place-items: center;
+        font-size: 32px;
+        margin-inline: auto;
+        margin-bottom: var(--space-6);
+      }
+      #thankyou-panel h2 {
+        font-family: var(--font-display);
+        font-size: var(--text-xl);
+        margin-bottom: var(--space-3);
+      }
+      #thankyou-panel p {
+        color: var(--text-muted);
+        max-width: 44ch;
+        margin-inline: auto;
+      }
 
-footer{text-align:center;padding:var(--space-8) var(--space-4);font-size:var(--text-xs);color:var(--text-faint);border-top:1px solid var(--divider);}
+      footer {
+        text-align: center;
+        padding: var(--space-8) var(--space-4);
+        font-size: var(--text-xs);
+        color: var(--text-faint);
+        border-top: 1px solid var(--divider);
+      }
 
-@media(max-width:600px){
-  .question-panel,#result-panel{padding:var(--space-5) var(--space-4);}
-  .q-footer{padding:var(--space-4);}
-  .form-row{grid-template-columns:1fr;}
-  .cta-block{padding:var(--space-6) var(--space-4);}
-}
-</style>
-</head>
-<body>
-
-<nav>
-  <a class="logo" href="#">
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-label="Gufy logo">
-      <rect width="28" height="28" rx="7" fill="currentColor"/>
-      <path d="M8 14a6 6 0 1 1 8.5 5.5V16h-2v5.5A6 6 0 0 1 8 14z" fill="white"/>
-      <circle cx="14" cy="14" r="2" fill="white"/>
-    </svg>
-    Gufy
-  </a>
-  <button class="theme-btn" data-theme-toggle aria-label="Toggle theme">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-  </button>
-</nav>
-
-<div class="page-wrap">
-
-  <section class="hero">
-    <div class="hero-badge">
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
-      Free · 2 Minutes · No BS
-    </div>
-    <h1>Is your flooring business<br><em>bleeding leads every month?</em></h1>
-    <p>Answer 7 quick questions and get a free score revealing exactly where your pipeline is leaking — and what to do about it.</p>
-    <div class="hero-stats">
-      <div class="hero-stat"><strong>$3,200</strong><span>avg monthly revenue lost to slow follow-up</span></div>
-      <div class="hero-stat"><strong>78%</strong><span>of jobs go to the first contractor who responds</span></div>
-      <div class="hero-stat"><strong>2 min</strong><span>to get your score</span></div>
-    </div>
-  </section>
-
-  <div class="quiz-card" id="quiz-card">
-
-    <div class="progress-bar-wrap" id="progress-wrap">
-      <div class="progress-label">
-        <span id="progress-text">Question 1 of 7</span>
-        <span id="progress-pct">14%</span>
-      </div>
-      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:14%"></div></div>
-    </div>
-
-    <!-- Q1 -->
-    <div id="q1" class="question-panel active">
-      <div class="q-step">Question 1 / 7</div>
-      <p class="q-text">Where are most of your flooring jobs coming from right now?</p>
-      <div class="options">
-        <button class="option-btn" data-val="1"><span class="option-letter">A</span><span class="option-text">Word of mouth and referrals only</span></button>
-        <button class="option-btn" data-val="2"><span class="option-letter">B</span><span class="option-text">Angi, HomeAdvisor, or Thumbtack leads</span></button>
-        <button class="option-btn" data-val="3"><span class="option-letter">C</span><span class="option-text">Running some Facebook or Google ads</span></button>
-        <button class="option-btn" data-val="4"><span class="option-letter">D</span><span class="option-text">Consistent paid ads with a dedicated landing page</span></button>
-      </div>
-    </div>
-
-    <!-- Q2 -->
-    <div id="q2" class="question-panel">
-      <div class="q-step">Question 2 / 7</div>
-      <p class="q-text">When a homeowner fills out a form or calls, how fast do you typically respond?</p>
-      <div class="options">
-        <button class="option-btn" data-val="1"><span class="option-letter">A</span><span class="option-text">Whenever I get around to it — sometimes next day</span></button>
-        <button class="option-btn" data-val="2"><span class="option-letter">B</span><span class="option-text">Within a few hours</span></button>
-        <button class="option-btn" data-val="3"><span class="option-letter">C</span><span class="option-text">Within 30 minutes</span></button>
-        <button class="option-btn" data-val="4"><span class="option-letter">D</span><span class="option-text">Under 5 minutes — automated text + call</span></button>
-      </div>
-    </div>
-
-    <!-- Q3 -->
-    <div id="q3" class="question-panel">
-      <div class="q-step">Question 3 / 7</div>
-      <p class="q-text">What happens to leads who don't book right away?</p>
-      <div class="options">
-        <button class="option-btn" data-val="1"><span class="option-letter">A</span><span class="option-text">I don't follow up — if they're serious they'll call back</span></button>
-        <button class="option-btn" data-val="2"><span class="option-letter">B</span><span class="option-text">One follow-up text or call, then I move on</span></button>
-        <button class="option-btn" data-val="3"><span class="option-letter">C</span><span class="option-text">2–3 follow-ups spread over a week</span></button>
-        <button class="option-btn" data-val="4"><span class="option-letter">D</span><span class="option-text">Automated multi-touch sequence over 2–4 weeks</span></button>
-      </div>
-    </div>
-
-    <!-- Q4 -->
-    <div id="q4" class="question-panel">
-      <div class="q-step">Question 4 / 7</div>
-      <p class="q-text">What happens to people who visit your website but don't reach out?</p>
-      <div class="options">
-        <button class="option-btn" data-val="1"><span class="option-letter">A</span><span class="option-text">Nothing — I don't have retargeting set up</span></button>
-        <button class="option-btn" data-val="2"><span class="option-letter">B</span><span class="option-text">I have a Meta Pixel but nothing active running</span></button>
-        <button class="option-btn" data-val="3"><span class="option-letter">C</span><span class="option-text">Running basic retargeting ads</span></button>
-        <button class="option-btn" data-val="4"><span class="option-letter">D</span><span class="option-text">Full retargeting funnel with segmented audiences</span></button>
-      </div>
-    </div>
-
-    <!-- Q5 -->
-    <div id="q5" class="question-panel">
-      <div class="q-step">Question 5 / 7</div>
-      <p class="q-text">How do you collect and use reviews from past customers?</p>
-      <div class="options">
-        <button class="option-btn" data-val="1"><span class="option-letter">A</span><span class="option-text">I don't actively ask for reviews</span></button>
-        <button class="option-btn" data-val="2"><span class="option-letter">B</span><span class="option-text">Sometimes ask verbally after the job</span></button>
-        <button class="option-btn" data-val="3"><span class="option-letter">C</span><span class="option-text">Send a text after each job asking for a Google review</span></button>
-        <button class="option-btn" data-val="4"><span class="option-letter">D</span><span class="option-text">Automated review requests — plugged into ads and website</span></button>
-      </div>
-    </div>
-
-    <!-- Q6 -->
-    <div id="q6" class="question-panel">
-      <div class="q-step">Question 6 / 7</div>
-      <p class="q-text">Do you know your cost per lead and cost per booked job from your ads?</p>
-      <div class="options">
-        <button class="option-btn" data-val="1"><span class="option-letter">A</span><span class="option-text">Not tracking it at all</span></button>
-        <button class="option-btn" data-val="2"><span class="option-letter">B</span><span class="option-text">Rough ballpark but nothing precise</span></button>
-        <button class="option-btn" data-val="3"><span class="option-letter">C</span><span class="option-text">Track cost per lead but not full acquisition cost</span></button>
-        <button class="option-btn" data-val="4"><span class="option-letter">D</span><span class="option-text">Full funnel tracked — CPL, cost per booking, ROAS</span></button>
-      </div>
-    </div>
-
-    <!-- Q7 -->
-    <div id="q7" class="question-panel">
-      <div class="q-step">Question 7 / 7</div>
-      <p class="q-text">How consistent is your lead flow month to month?</p>
-      <div class="options">
-        <button class="option-btn" data-val="1"><span class="option-letter">A</span><span class="option-text">Feast or famine — totally unpredictable</span></button>
-        <button class="option-btn" data-val="2"><span class="option-letter">B</span><span class="option-text">Somewhat steady but slow months really hurt</span></button>
-        <button class="option-btn" data-val="3"><span class="option-letter">C</span><span class="option-text">Fairly consistent with occasional dry spells</span></button>
-        <button class="option-btn" data-val="4"><span class="option-letter">D</span><span class="option-text">Predictable pipeline — I know roughly what's coming</span></button>
-      </div>
-    </div>
-
-    <!-- RESULT PANEL -->
-    <div id="result-panel">
-      <div class="score-ring-wrap">
-        <div class="score-ring">
-          <svg viewBox="0 0 140 140" width="140" height="140">
-            <circle class="score-ring-bg" cx="70" cy="70" r="60"/>
-            <circle class="score-ring-fill" id="score-ring-fill" cx="70" cy="70" r="60" stroke-dasharray="377" stroke-dashoffset="377"/>
-          </svg>
-          <div class="score-number" id="score-display">0</div>
-        </div>
-        <div class="score-grade" id="score-grade">Calculating…</div>
-        <p class="score-sub" id="score-sub"></p>
-      </div>
-
-      <div class="breakdown">
-        <h2>Your pipeline breakdown</h2>
-        <div class="breakdown-list" id="breakdown-list"></div>
-      </div>
-
-      <div class="insights">
-        <h2>Where Gufy can help</h2>
-        <div id="insights-list"></div>
-      </div>
-
-      <div class="cta-block">
-        <h2>Book your free 30-min strategy call</h2>
-        <p>We'll show you the exact campaigns we'd run for your market — and what a realistic pipeline looks like in 90 days.</p>
-        <form class="lead-form" id="lead-form" novalidate>
-          <div class="form-row">
-            <div class="field-wrap">
-              <label for="lf-name">Your Name</label>
-              <input id="lf-name" type="text" placeholder="John Smith" required>
-            </div>
-            <div class="field-wrap">
-              <label for="lf-biz">Business Name</label>
-              <input id="lf-biz" type="text" placeholder="Smith Flooring LLC" required>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field-wrap">
-              <label for="lf-phone">Phone / Cell</label>
-              <input id="lf-phone" type="tel" placeholder="(555) 867-5309" required>
-            </div>
-            <div class="field-wrap">
-              <label for="lf-city">City / State</label>
-              <input id="lf-city" type="text" placeholder="Austin, TX" required>
-            </div>
-          </div>
-          <button type="submit" class="btn-cta">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Book My Free Strategy Call
-          </button>
-          <p class="cta-note">No credit card. No obligation. We'll reach out within 1 business hour to confirm.</p>
-        </form>
-        <button type="button" id="test-webhook-btn" style="display:none;width:100%;padding:8px;margin-top:8px;background:#666;color:white;border:none;border-radius:4px;cursor:pointer;font-size:12px;">Debug: Test Webhook</button>
-      </div>
-
-      <button class="retake-btn" id="retake-btn">← Retake the quiz</button>
-    </div>
-
-    <!-- THANK YOU -->
-    <div id="thankyou-panel">
-      <div class="ty-icon">✓</div>
-      <h2>You're on the calendar!</h2>
-      <p>We'll call or text you at the number you provided within 1 business hour to lock in a time. Talk soon.</p>
-    </div>
-
-    <div class="q-footer" id="q-footer">
-      <button class="btn-next" id="next-btn" disabled>
-        Next
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      @media (max-width: 600px) {
+        .question-panel,
+        #result-panel {
+          padding: var(--space-5) var(--space-4);
+        }
+        .q-footer {
+          padding: var(--space-4);
+        }
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        .cta-block {
+          padding: var(--space-6) var(--space-4);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a class="logo" href="#">
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 28 28"
+          fill="none"
+          aria-label="Gufy logo"
+        >
+          <rect width="28" height="28" rx="7" fill="currentColor" />
+          <path
+            d="M8 14a6 6 0 1 1 8.5 5.5V16h-2v5.5A6 6 0 0 1 8 14z"
+            fill="white"
+          />
+          <circle cx="14" cy="14" r="2" fill="white" />
+        </svg>
+        Gufy
+      </a>
+      <button class="theme-btn" data-theme-toggle aria-label="Toggle theme">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
       </button>
+    </nav>
+
+    <div class="page-wrap">
+      <section class="hero">
+        <div class="hero-badge">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+            <circle cx="5" cy="5" r="5" />
+          </svg>
+          Free · 2 Minutes · No BS
+        </div>
+        <h1>
+          Is your flooring business<br /><em>bleeding leads every month?</em>
+        </h1>
+        <p>
+          Answer 7 quick questions and get a free score revealing exactly where
+          your pipeline is leaking — and what to do about it.
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <strong>$3,200</strong
+            ><span>avg monthly revenue lost to slow follow-up</span>
+          </div>
+          <div class="hero-stat">
+            <strong>78%</strong
+            ><span>of jobs go to the first contractor who responds</span>
+          </div>
+          <div class="hero-stat">
+            <strong>2 min</strong><span>to get your score</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="quiz-card" id="quiz-card">
+        <div class="progress-bar-wrap" id="progress-wrap">
+          <div class="progress-label">
+            <span id="progress-text">Question 1 of 7</span>
+            <span id="progress-pct">14%</span>
+          </div>
+          <div class="progress-track">
+            <div
+              class="progress-fill"
+              id="progress-fill"
+              style="width: 14%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Q1 -->
+        <div id="q1" class="question-panel active">
+          <div class="q-step">Question 1 / 7</div>
+          <p class="q-text">
+            Where are most of your flooring jobs coming from right now?
+          </p>
+          <div class="options">
+            <button class="option-btn" data-val="1">
+              <span class="option-letter">A</span
+              ><span class="option-text">Word of mouth and referrals only</span>
+            </button>
+            <button class="option-btn" data-val="2">
+              <span class="option-letter">B</span
+              ><span class="option-text"
+                >Angi, HomeAdvisor, or Thumbtack leads</span
+              >
+            </button>
+            <button class="option-btn" data-val="3">
+              <span class="option-letter">C</span
+              ><span class="option-text"
+                >Running some Facebook or Google ads</span
+              >
+            </button>
+            <button class="option-btn" data-val="4">
+              <span class="option-letter">D</span
+              ><span class="option-text"
+                >Consistent paid ads with a dedicated landing page</span
+              >
+            </button>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div id="q2" class="question-panel">
+          <div class="q-step">Question 2 / 7</div>
+          <p class="q-text">
+            When a homeowner fills out a form or calls, how fast do you
+            typically respond?
+          </p>
+          <div class="options">
+            <button class="option-btn" data-val="1">
+              <span class="option-letter">A</span
+              ><span class="option-text"
+                >Whenever I get around to it — sometimes next day</span
+              >
+            </button>
+            <button class="option-btn" data-val="2">
+              <span class="option-letter">B</span
+              ><span class="option-text">Within a few hours</span>
+            </button>
+            <button class="option-btn" data-val="3">
+              <span class="option-letter">C</span
+              ><span class="option-text">Within 30 minutes</span>
+            </button>
+            <button class="option-btn" data-val="4">
+              <span class="option-letter">D</span
+              ><span class="option-text"
+                >Under 5 minutes — automated text + call</span
+              >
+            </button>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div id="q3" class="question-panel">
+          <div class="q-step">Question 3 / 7</div>
+          <p class="q-text">What happens to leads who don't book right away?</p>
+          <div class="options">
+            <button class="option-btn" data-val="1">
+              <span class="option-letter">A</span
+              ><span class="option-text"
+                >I don't follow up — if they're serious they'll call back</span
+              >
+            </button>
+            <button class="option-btn" data-val="2">
+              <span class="option-letter">B</span
+              ><span class="option-text"
+                >One follow-up text or call, then I move on</span
+              >
+            </button>
+            <button class="option-btn" data-val="3">
+              <span class="option-letter">C</span
+              ><span class="option-text"
+                >2–3 follow-ups spread over a week</span
+              >
+            </button>
+            <button class="option-btn" data-val="4">
+              <span class="option-letter">D</span
+              ><span class="option-text"
+                >Automated multi-touch sequence over 2–4 weeks</span
+              >
+            </button>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div id="q4" class="question-panel">
+          <div class="q-step">Question 4 / 7</div>
+          <p class="q-text">
+            What happens to people who visit your website but don't reach out?
+          </p>
+          <div class="options">
+            <button class="option-btn" data-val="1">
+              <span class="option-letter">A</span
+              ><span class="option-text"
+                >Nothing — I don't have retargeting set up</span
+              >
+            </button>
+            <button class="option-btn" data-val="2">
+              <span class="option-letter">B</span
+              ><span class="option-text"
+                >I have a Meta Pixel but nothing active running</span
+              >
+            </button>
+            <button class="option-btn" data-val="3">
+              <span class="option-letter">C</span
+              ><span class="option-text">Running basic retargeting ads</span>
+            </button>
+            <button class="option-btn" data-val="4">
+              <span class="option-letter">D</span
+              ><span class="option-text"
+                >Full retargeting funnel with segmented audiences</span
+              >
+            </button>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div id="q5" class="question-panel">
+          <div class="q-step">Question 5 / 7</div>
+          <p class="q-text">
+            How do you collect and use reviews from past customers?
+          </p>
+          <div class="options">
+            <button class="option-btn" data-val="1">
+              <span class="option-letter">A</span
+              ><span class="option-text">I don't actively ask for reviews</span>
+            </button>
+            <button class="option-btn" data-val="2">
+              <span class="option-letter">B</span
+              ><span class="option-text"
+                >Sometimes ask verbally after the job</span
+              >
+            </button>
+            <button class="option-btn" data-val="3">
+              <span class="option-letter">C</span
+              ><span class="option-text"
+                >Send a text after each job asking for a Google review</span
+              >
+            </button>
+            <button class="option-btn" data-val="4">
+              <span class="option-letter">D</span
+              ><span class="option-text"
+                >Automated review requests — plugged into ads and website</span
+              >
+            </button>
+          </div>
+        </div>
+
+        <!-- Q6 -->
+        <div id="q6" class="question-panel">
+          <div class="q-step">Question 6 / 7</div>
+          <p class="q-text">
+            Do you know your cost per lead and cost per booked job from your
+            ads?
+          </p>
+          <div class="options">
+            <button class="option-btn" data-val="1">
+              <span class="option-letter">A</span
+              ><span class="option-text">Not tracking it at all</span>
+            </button>
+            <button class="option-btn" data-val="2">
+              <span class="option-letter">B</span
+              ><span class="option-text"
+                >Rough ballpark but nothing precise</span
+              >
+            </button>
+            <button class="option-btn" data-val="3">
+              <span class="option-letter">C</span
+              ><span class="option-text"
+                >Track cost per lead but not full acquisition cost</span
+              >
+            </button>
+            <button class="option-btn" data-val="4">
+              <span class="option-letter">D</span
+              ><span class="option-text"
+                >Full funnel tracked — CPL, cost per booking, ROAS</span
+              >
+            </button>
+          </div>
+        </div>
+
+        <!-- Q7 -->
+        <div id="q7" class="question-panel">
+          <div class="q-step">Question 7 / 7</div>
+          <p class="q-text">How consistent is your lead flow month to month?</p>
+          <div class="options">
+            <button class="option-btn" data-val="1">
+              <span class="option-letter">A</span
+              ><span class="option-text"
+                >Feast or famine — totally unpredictable</span
+              >
+            </button>
+            <button class="option-btn" data-val="2">
+              <span class="option-letter">B</span
+              ><span class="option-text"
+                >Somewhat steady but slow months really hurt</span
+              >
+            </button>
+            <button class="option-btn" data-val="3">
+              <span class="option-letter">C</span
+              ><span class="option-text"
+                >Fairly consistent with occasional dry spells</span
+              >
+            </button>
+            <button class="option-btn" data-val="4">
+              <span class="option-letter">D</span
+              ><span class="option-text"
+                >Predictable pipeline — I know roughly what's coming</span
+              >
+            </button>
+          </div>
+        </div>
+
+        <!-- RESULT PANEL -->
+        <div id="result-panel">
+          <div class="score-ring-wrap">
+            <div class="score-ring">
+              <svg viewBox="0 0 140 140" width="140" height="140">
+                <circle class="score-ring-bg" cx="70" cy="70" r="60" />
+                <circle
+                  class="score-ring-fill"
+                  id="score-ring-fill"
+                  cx="70"
+                  cy="70"
+                  r="60"
+                  stroke-dasharray="377"
+                  stroke-dashoffset="377"
+                />
+              </svg>
+              <div class="score-number" id="score-display">0</div>
+            </div>
+            <div class="score-grade" id="score-grade">Calculating…</div>
+            <p class="score-sub" id="score-sub"></p>
+          </div>
+
+          <div class="breakdown">
+            <h2>Your pipeline breakdown</h2>
+            <div class="breakdown-list" id="breakdown-list"></div>
+          </div>
+
+          <div class="insights">
+            <h2>Where Gufy can help</h2>
+            <div id="insights-list"></div>
+          </div>
+
+          <div class="cta-block">
+            <h2>Book your free 30-min strategy call</h2>
+            <p>
+              We'll show you the exact campaigns we'd run for your market — and
+              what a realistic pipeline looks like in 90 days.
+            </p>
+            <form class="lead-form" id="lead-form" novalidate>
+              <div class="form-row">
+                <div class="field-wrap">
+                  <label for="lf-name">Your Name</label>
+                  <input
+                    id="lf-name"
+                    type="text"
+                    placeholder="John Smith"
+                    required
+                  />
+                </div>
+                <div class="field-wrap">
+                  <label for="lf-biz">Business Name</label>
+                  <input
+                    id="lf-biz"
+                    type="text"
+                    placeholder="Smith Flooring LLC"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field-wrap">
+                  <label for="lf-phone">Phone / Cell</label>
+                  <input
+                    id="lf-phone"
+                    type="tel"
+                    placeholder="(555) 867-5309"
+                    required
+                  />
+                </div>
+                <div class="field-wrap">
+                  <label for="lf-city">City / State</label>
+                  <input
+                    id="lf-city"
+                    type="text"
+                    placeholder="Austin, TX"
+                    required
+                  />
+                </div>
+              </div>
+              <button type="submit" class="btn-cta">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                Book My Free Strategy Call
+              </button>
+              <p class="cta-note">
+                No credit card. No obligation. We'll reach out within 1 business
+                hour to confirm.
+              </p>
+            </form>
+            <button
+              type="button"
+              id="test-webhook-btn"
+              style="
+                display: none;
+                width: 100%;
+                padding: 8px;
+                margin-top: 8px;
+                background: #666;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+              "
+            >
+              Debug: Test Webhook
+            </button>
+          </div>
+
+          <button class="retake-btn" id="retake-btn">← Retake the quiz</button>
+        </div>
+
+        <!-- THANK YOU -->
+        <div id="thankyou-panel">
+          <div class="ty-icon">✓</div>
+          <h2>You're on the calendar!</h2>
+          <p>
+            We'll call or text you at the number you provided within 1 business
+            hour to lock in a time. Talk soon.
+          </p>
+        </div>
+
+        <div class="q-footer" id="q-footer">
+          <button class="btn-next" id="next-btn" disabled>
+            Next
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <!-- /quiz-card -->
     </div>
+    <!-- /page-wrap -->
 
-  </div><!-- /quiz-card -->
-</div><!-- /page-wrap -->
+    <footer>
+      © 2026 Gufy · Growth Marketing for Home Service Contractors · Based in the
+      USA
+    </footer>
 
-<footer>© 2026 Gufy · Growth Marketing for Home Service Contractors · Based in the USA</footer>
-
-<script>
-(function(){
-  // Theme
-  const themeBtn=document.querySelector('[data-theme-toggle]'),html=document.documentElement;
-  let theme=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
-  const sun=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`;
-  const moon=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
-  function applyTheme(t){html.setAttribute('data-theme',t);themeBtn.innerHTML=t==='dark'?sun:moon;}
-  applyTheme(theme);
-  themeBtn.addEventListener('click',()=>{theme=theme==='dark'?'light':'dark';applyTheme(theme);});
-
-  // State
-  const TOTAL=7;
-  let current=1,answers={};
-  const nextBtn=document.getElementById('next-btn');
-  const qFooter=document.getElementById('q-footer');
-  const pFill=document.getElementById('progress-fill');
-  const pText=document.getElementById('progress-text');
-  const pPct=document.getElementById('progress-pct');
-
-  document.querySelectorAll('.question-panel').forEach(panel=>{
-    panel.querySelectorAll('.option-btn').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        panel.querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));
-        btn.classList.add('selected');
-        answers[current]=parseInt(btn.dataset.val);
-        nextBtn.disabled=false;
-      });
-    });
-  });
-
-  nextBtn.addEventListener('click',()=>{
-    if(!answers[current])return;
-    if(current<TOTAL){
-      document.getElementById('q'+current).classList.remove('active');
-      current++;
-      document.getElementById('q'+current).classList.add('active');
-      updateProgress();
-      nextBtn.disabled=!answers[current];
-      if(current===TOTAL){
-        nextBtn.innerHTML=`See My Score <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
-      }
-    } else {
-      showResult();
-    }
-  });
-
-  function updateProgress(){
-    const pct=Math.round((current/TOTAL)*100);
-    pFill.style.width=pct+'%';
-    pText.textContent='Question '+current+' of '+TOTAL;
-    pPct.textContent=pct+'%';
-  }
-
-  const categories=[
-    {q:1,label:'Lead Generation',    weight:20},
-    {q:2,label:'Speed to Lead',      weight:20},
-    {q:3,label:'Lead Follow-up',     weight:15},
-    {q:4,label:'Retargeting',        weight:15},
-    {q:5,label:'Reputation & Reviews',weight:10},
-    {q:6,label:'Tracking & ROAS',    weight:10},
-    {q:7,label:'Pipeline Consistency',weight:10},
-  ];
-
-  const insights={
-    1:{
-      bad:{icon:'📣',title:'You\'re paying Angi & HomeAdvisor to rent leads you don\'t own',body:'Angi/HomeAdvisor sell the same lead to 3–5 contractors. You\'re in a race every time — and paying $50–$150 per shared lead with no exclusivity.',fix:'Gufy runs targeted Facebook & Google ads that send exclusive leads directly to you. No middleman, no bidding wars.'},
-      warn:{icon:'⚡',title:'Your ad campaigns need a proper landing page',body:'Running ads without a dedicated flooring landing page wastes 40–60% of your ad spend. Most homeowners bounce off a generic homepage.',fix:'Gufy builds high-converting landing pages built specifically for flooring leads — typically 3× better CPL than homepage traffic.'},
-      good:{icon:'✅',title:'Solid lead gen foundation',body:'You\'re already running paid ads. The next lever is tightening CPL and scaling what\'s working.',fix:null},
-    },
-    2:{
-      bad:{icon:'🔥',title:'Slow response is costing you $3,200+/month',body:'78% of homeowners hire the first contractor who responds. If you\'re not calling back within 5 minutes, you\'re handing jobs to whoever is.',fix:'Gufy sets up instant automated texts the second a lead comes in, plus CRM alerts so you\'re first to call — every time.'},
-      warn:{icon:'⏱️',title:'A few hours is too slow in a competitive market',body:'Leads go cold fast. Homeowners getting quotes from 3 contractors will often book the first callback they get.',fix:'Gufy automates first contact under 60 seconds — even when you\'re on-site mid-install.'},
-      good:{icon:'✅',title:'Fast response — you\'re winning here',body:'Speed to lead is one of the biggest competitive edges in flooring. Keep it up.',fix:null},
-    },
-    3:{
-      bad:{icon:'💸',title:'You\'re abandoning $2,000–$6,000 jobs',body:'Most homeowners don\'t decide on the first contact. Without follow-up, you\'re giving those jobs away — 68% of homeowners buy after the 4th or 5th touchpoint.',fix:'Gufy builds a 14-day automated follow-up sequence via text + email that turns cold leads into booked estimates.'},
-      warn:{icon:'🔁',title:'Your follow-up drops off too early',body:'One follow-up call closes almost nothing. Most conversions happen after touch #3–5.',fix:'Gufy automates a multi-touch sequence so no lead ever slips through the cracks.'},
-      good:{icon:'✅',title:'Solid follow-up discipline',body:'You\'re following up consistently. Let Gufy automate it so it scales without adding to your plate.',fix:null},
-    },
-    4:{
-      bad:{icon:'👻',title:'97% of your website visitors are leaving forever',body:'Without retargeting, every homeowner who browses your site and doesn\'t call is gone. That\'s ad spend with no second chance.',fix:'Gufy installs your Meta Pixel, builds warm retargeting audiences, and runs ads that bring those visitors back — often at 5× lower CPL.'},
-      warn:{icon:'🎯',title:'Your Pixel is collecting dust',body:'Having a Pixel installed but no active retargeting is like owning a fishing net and never casting it.',fix:'Gufy activates your existing Pixel with structured retargeting campaigns in the first week.'},
-      good:{icon:'✅',title:'Retargeting is live — great',body:'You\'re capturing warm intent. Gufy can layer in creative sequencing to push conversion rates higher.',fix:null},
-    },
-    5:{
-      bad:{icon:'⭐',title:'No reviews = lost jobs, every day',body:'91% of homeowners check Google reviews before reaching out. A thin or empty review profile means they\'re calling your competitor instead.',fix:'Gufy automates post-job review requests via text — most clients hit 50+ Google reviews within 90 days, then uses them in ad creative.'},
-      warn:{icon:'📲',title:'Reviews are happening manually — too slowly',body:'A systematic approach multiplies your review count 4–5× within 90 days.',fix:'Gufy automates the full review workflow after every completed job.'},
-      good:{icon:'✅',title:'Strong review generation',body:'Now let\'s plug your best reviews into your ad creative and landing page to boost conversions.',fix:null},
-    },
-    6:{
-      bad:{icon:'📊',title:'You\'re flying blind on ad spend',body:'Without tracking, you can\'t know if you\'re spending $80 or $400 to get a booked job. That makes scaling impossible.',fix:'Gufy builds full-funnel tracking — CPL, booking rate, cost per installed job, and ROAS — so every dollar has an answer.'},
-      warn:{icon:'🔍',title:'Partial tracking limits your scaling',body:'Knowing CPL is helpful but not knowing your full cost per booked job means you\'re guessing on budget decisions.',fix:'Gufy builds a live dashboard so you see exactly where every lead and revenue dollar came from.'},
-      good:{icon:'✅',title:'Tracking is solid — great',body:'You\'re making data-driven decisions. Gufy builds on this with full-funnel attribution and ROAS optimization.',fix:null},
-    },
-    7:{
-      bad:{icon:'📉',title:'Feast-or-famine is draining your business',body:'Unpredictable lead flow makes it impossible to manage crews, materials, and cash flow. Slow months eat all your profit from busy months.',fix:'Gufy builds an always-on lead system — consistent, predictable new inquiries every month regardless of season.'},
-      warn:{icon:'🌊',title:'Slow months are costing you real money',body:'With proactive off-season campaigns, most flooring contractors can cut slow-period revenue drops by 50–70%.',fix:'Gufy maps your campaign calendar 90 days ahead so you\'re never scrambling to fill the schedule.'},
-      good:{icon:'✅',title:'Predictable pipeline — strong foundation',body:'Consistency is the foundation of a scalable business. Gufy helps you grow from this stable base.',fix:null},
-    },
-  };
-
-  function getTag(val){
-    if(val>=3)return'good';
-    if(val>=2)return'warn';
-    return'bad';
-  }
-
-  function showResult(){
-    document.querySelectorAll('.question-panel').forEach(p=>p.classList.remove('active'));
-    qFooter.style.display='none';
-    document.getElementById('progress-wrap').style.display='none';
-
-    let total=0;
-    categories.forEach(c=>{
-      const a=answers[c.q]||1;
-      total+=((a-1)/3)*c.weight;
-    });
-    total=Math.round(total);
-
-    let grade,sub;
-    if(total>=80){grade='🏆 Strong Pipeline';sub='Your lead system is well-built. Gufy can help optimize ROAS and scale what\'s already working.';}
-    else if(total>=55){grade='⚠️ Room to Grow';sub='You have some solid pieces in place, but several gaps are costing you jobs every month.';}
-    else if(total>=30){grade='🔴 Significant Gaps';sub='Your pipeline has real holes. Contractors in your market are capturing the leads you\'re missing.';}
-    else{grade='🚨 Pipeline at Risk';sub='Without structural changes, unpredictable revenue will stay the norm. The good news: these are fixable fast.';}
-
-    document.getElementById('result-panel').classList.add('active');
-
-    const fill=document.getElementById('score-ring-fill');
-    const scoreColor=total>=80?'var(--green)':total>=55?'var(--amber)':'var(--red)';
-    fill.style.stroke=scoreColor;
-    let disp=0;
-    const el=document.getElementById('score-display');
-    el.style.color=scoreColor;
-    const iv=setInterval(()=>{disp=Math.min(disp+2,total);el.textContent=disp;if(disp>=total)clearInterval(iv);},18);
-    setTimeout(()=>{fill.style.strokeDashoffset=377-(total/100)*377;},100);
-
-    document.getElementById('score-grade').textContent=grade;
-    document.getElementById('score-sub').textContent=sub;
-
-    const bList=document.getElementById('breakdown-list');
-    bList.innerHTML='';
-    categories.forEach(c=>{
-      const a=answers[c.q]||1;
-      const pct=Math.round(((a-1)/3)*100);
-      const tag=getTag(a-1);
-      const label=tag==='good'?'Strong':tag==='warn'?'Needs Work':'Critical';
-      const item=document.createElement('div');
-      item.className='breakdown-item tag-'+tag;
-      item.innerHTML=`<span class="bi-label">${c.label}</span><span class="bi-score">${label}</span><div class="bi-bar-row"><div class="bi-bar-track"><div class="bi-bar-fill" style="width:0%" data-w="${pct}%"></div></div></div>`;
-      bList.appendChild(item);
-    });
-    setTimeout(()=>{document.querySelectorAll('.bi-bar-fill').forEach(b=>{b.style.width=b.dataset.w;});},200);
-
-    const iList=document.getElementById('insights-list');
-    iList.innerHTML='';
-    categories.forEach(c=>{
-      const a=answers[c.q]||1;
-      const tag=getTag(a-1);
-      const data=insights[c.q][tag];
-      if(!data)return;
-      const card=document.createElement('div');
-      card.className='insight-card insight-'+tag;
-      card.innerHTML=`<div class="insight-icon">${data.icon}</div><div><h3>${data.title}</h3><p>${data.body}</p>${data.fix?`<span class="insight-fix">→ How Gufy fixes this: ${data.fix}</span>`:''}</div>`;
-      iList.appendChild(card);
-    });
-  }
-
-  // Enable debug mode with ?debug=1 in URL
-  const debugMode=new URLSearchParams(window.location.search).get('debug')==='1';
-  
-  document.getElementById('lead-form').addEventListener('submit',async function(e){
-    e.preventDefault();
-    const name=document.getElementById('lf-name').value.trim();
-    const biz=document.getElementById('lf-biz').value.trim();
-    const phone=document.getElementById('lf-phone').value.trim();
-    const city=document.getElementById('lf-city').value.trim();
-    if(!name||!phone){alert('Please fill in your name and phone number.');return;}
-
-    let total=0;
-    categories.forEach(c=>{const a=answers[c.q]||1;total+=((a-1)/3)*c.weight;});
-    total=Math.round(total);
-
-    // Prepare lead data for Zapier/GHL
-    const leadData={
-      name:name,
-      businessName:biz,
-      phone:phone,
-      city:city,
-      score:total,
-      timestamp:new Date().toISOString(),
-      quizAnswers:answers,
-    };
-
-    if(debugMode)console.log('📤 Sending to Zapier:',leadData);
-
-    // Send to Zapier webhook
-    const zapierWebhookUrl='https://hooks.zapier.com/hooks/catch/22898586/u7q3fby/';
-    if(zapierWebhookUrl!=='YOUR_ZAPIER_WEBHOOK_URL_HERE'){
-      try{
-        if(debugMode)console.log('🔗 Webhook URL:',zapierWebhookUrl);
-        const response=await fetch(zapierWebhookUrl,{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify(leadData),
-          mode:'no-cors'
+    <script>
+      (function () {
+        // Theme
+        const themeBtn = document.querySelector("[data-theme-toggle]"),
+          html = document.documentElement;
+        let theme = matchMedia("(prefers-color-scheme:dark)").matches
+          ? "dark"
+          : "light";
+        const sun = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`;
+        const moon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+        function applyTheme(t) {
+          html.setAttribute("data-theme", t);
+          themeBtn.innerHTML = t === "dark" ? sun : moon;
+        }
+        applyTheme(theme);
+        themeBtn.addEventListener("click", () => {
+          theme = theme === "dark" ? "light" : "dark";
+          applyTheme(theme);
         });
-        if(debugMode)console.log('✅ Webhook response status:',response.status);
-      }catch(err){
-        if(debugMode)console.error('❌ Webhook error:',err);
-      }
-    }
 
-    // Small delay to ensure webhook fires
-    await new Promise(r=>setTimeout(r,500));
+        // State
+        const TOTAL = 7;
+        let current = 1,
+          answers = {};
+        const nextBtn = document.getElementById("next-btn");
+        const qFooter = document.getElementById("q-footer");
+        const pFill = document.getElementById("progress-fill");
+        const pText = document.getElementById("progress-text");
+        const pPct = document.getElementById("progress-pct");
 
-    // Opens Calendly — replace URL with your actual Calendly link
-    const calendlyUrl='https://calendly.com/gufy/strategy-call';
-    window.open(calendlyUrl,'_blank','noopener');
-
-    document.getElementById('result-panel').classList.remove('active');
-    document.getElementById('thankyou-panel').classList.add('active');
-  });
-
-  // Test webhook button
-  if(debugMode){
-    document.getElementById('test-webhook-btn').style.display='block';
-    document.getElementById('test-webhook-btn').addEventListener('click',async function(){
-      const testData={
-        name:'Test User',
-        businessName:'Test Flooring Co',
-        phone:'(555) 123-4567',
-        city:'Test City, TX',
-        score:72,
-        timestamp:new Date().toISOString(),
-        quizAnswers:{1:3,2:4,3:2,4:1,5:2,6:3,7:2}
-      };
-      console.log('📤 Testing webhook with:',testData);
-      try{
-        const response=await fetch('https://hooks.zapier.com/hooks/catch/22898586/u7q3fby/',{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify(testData),
-          mode:'no-cors'
+        document.querySelectorAll(".question-panel").forEach((panel) => {
+          panel.querySelectorAll(".option-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              panel
+                .querySelectorAll(".option-btn")
+                .forEach((b) => b.classList.remove("selected"));
+              btn.classList.add("selected");
+              answers[current] = parseInt(btn.dataset.val);
+              nextBtn.disabled = false;
+            });
+          });
         });
-        console.log('✅ Test webhook sent! Status:',response.status);
-        alert('✅ Test webhook sent! Check Zapier dashboard for the request.');
-      }catch(err){
-        console.error('❌ Error:',err);
-        alert('❌ Error sending test webhook. Check console (F12) for details.');
-      }
-    });
-  }
 
-  document.getElementById('retake-btn').addEventListener('click',()=>{
-    answers={};current=1;
-    document.querySelectorAll('.question-panel').forEach(p=>{p.classList.remove('active');p.querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));});
-    document.getElementById('q1').classList.add('active');
-    document.getElementById('result-panel').classList.remove('active');
-    document.getElementById('thankyou-panel').classList.remove('active');
-    qFooter.style.display='flex';
-    document.getElementById('progress-wrap').style.display='block';
-    nextBtn.disabled=true;
-    nextBtn.innerHTML=`Next <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
-    updateProgress();
-    window.scrollTo({top:0,behavior:'smooth'});
-  });
-})();
-</script>
-</body>
+        nextBtn.addEventListener("click", () => {
+          if (!answers[current]) return;
+          if (current < TOTAL) {
+            document.getElementById("q" + current).classList.remove("active");
+            current++;
+            document.getElementById("q" + current).classList.add("active");
+            updateProgress();
+            nextBtn.disabled = !answers[current];
+            if (current === TOTAL) {
+              nextBtn.innerHTML = `See My Score <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+            }
+          } else {
+            showResult();
+          }
+        });
+
+        function updateProgress() {
+          const pct = Math.round((current / TOTAL) * 100);
+          pFill.style.width = pct + "%";
+          pText.textContent = "Question " + current + " of " + TOTAL;
+          pPct.textContent = pct + "%";
+        }
+
+        const categories = [
+          { q: 1, label: "Lead Generation", weight: 20 },
+          { q: 2, label: "Speed to Lead", weight: 20 },
+          { q: 3, label: "Lead Follow-up", weight: 15 },
+          { q: 4, label: "Retargeting", weight: 15 },
+          { q: 5, label: "Reputation & Reviews", weight: 10 },
+          { q: 6, label: "Tracking & ROAS", weight: 10 },
+          { q: 7, label: "Pipeline Consistency", weight: 10 },
+        ];
+
+        const insights = {
+          1: {
+            bad: {
+              icon: "📣",
+              title:
+                "You're paying Angi & HomeAdvisor to rent leads you don't own",
+              body: "Angi/HomeAdvisor sell the same lead to 3–5 contractors. You're in a race every time — and paying $50–$150 per shared lead with no exclusivity.",
+              fix: "Gufy runs targeted Facebook & Google ads that send exclusive leads directly to you. No middleman, no bidding wars.",
+            },
+            warn: {
+              icon: "⚡",
+              title: "Your ad campaigns need a proper landing page",
+              body: "Running ads without a dedicated flooring landing page wastes 40–60% of your ad spend. Most homeowners bounce off a generic homepage.",
+              fix: "Gufy builds high-converting landing pages built specifically for flooring leads — typically 3× better CPL than homepage traffic.",
+            },
+            good: {
+              icon: "✅",
+              title: "Solid lead gen foundation",
+              body: "You're already running paid ads. The next lever is tightening CPL and scaling what's working.",
+              fix: null,
+            },
+          },
+          2: {
+            bad: {
+              icon: "🔥",
+              title: "Slow response is costing you $3,200+/month",
+              body: "78% of homeowners hire the first contractor who responds. If you're not calling back within 5 minutes, you're handing jobs to whoever is.",
+              fix: "Gufy sets up instant automated texts the second a lead comes in, plus CRM alerts so you're first to call — every time.",
+            },
+            warn: {
+              icon: "⏱️",
+              title: "A few hours is too slow in a competitive market",
+              body: "Leads go cold fast. Homeowners getting quotes from 3 contractors will often book the first callback they get.",
+              fix: "Gufy automates first contact under 60 seconds — even when you're on-site mid-install.",
+            },
+            good: {
+              icon: "✅",
+              title: "Fast response — you're winning here",
+              body: "Speed to lead is one of the biggest competitive edges in flooring. Keep it up.",
+              fix: null,
+            },
+          },
+          3: {
+            bad: {
+              icon: "💸",
+              title: "You're abandoning $2,000–$6,000 jobs",
+              body: "Most homeowners don't decide on the first contact. Without follow-up, you're giving those jobs away — 68% of homeowners buy after the 4th or 5th touchpoint.",
+              fix: "Gufy builds a 14-day automated follow-up sequence via text + email that turns cold leads into booked estimates.",
+            },
+            warn: {
+              icon: "🔁",
+              title: "Your follow-up drops off too early",
+              body: "One follow-up call closes almost nothing. Most conversions happen after touch #3–5.",
+              fix: "Gufy automates a multi-touch sequence so no lead ever slips through the cracks.",
+            },
+            good: {
+              icon: "✅",
+              title: "Solid follow-up discipline",
+              body: "You're following up consistently. Let Gufy automate it so it scales without adding to your plate.",
+              fix: null,
+            },
+          },
+          4: {
+            bad: {
+              icon: "👻",
+              title: "97% of your website visitors are leaving forever",
+              body: "Without retargeting, every homeowner who browses your site and doesn't call is gone. That's ad spend with no second chance.",
+              fix: "Gufy installs your Meta Pixel, builds warm retargeting audiences, and runs ads that bring those visitors back — often at 5× lower CPL.",
+            },
+            warn: {
+              icon: "🎯",
+              title: "Your Pixel is collecting dust",
+              body: "Having a Pixel installed but no active retargeting is like owning a fishing net and never casting it.",
+              fix: "Gufy activates your existing Pixel with structured retargeting campaigns in the first week.",
+            },
+            good: {
+              icon: "✅",
+              title: "Retargeting is live — great",
+              body: "You're capturing warm intent. Gufy can layer in creative sequencing to push conversion rates higher.",
+              fix: null,
+            },
+          },
+          5: {
+            bad: {
+              icon: "⭐",
+              title: "No reviews = lost jobs, every day",
+              body: "91% of homeowners check Google reviews before reaching out. A thin or empty review profile means they're calling your competitor instead.",
+              fix: "Gufy automates post-job review requests via text — most clients hit 50+ Google reviews within 90 days, then uses them in ad creative.",
+            },
+            warn: {
+              icon: "📲",
+              title: "Reviews are happening manually — too slowly",
+              body: "A systematic approach multiplies your review count 4–5× within 90 days.",
+              fix: "Gufy automates the full review workflow after every completed job.",
+            },
+            good: {
+              icon: "✅",
+              title: "Strong review generation",
+              body: "Now let's plug your best reviews into your ad creative and landing page to boost conversions.",
+              fix: null,
+            },
+          },
+          6: {
+            bad: {
+              icon: "📊",
+              title: "You're flying blind on ad spend",
+              body: "Without tracking, you can't know if you're spending $80 or $400 to get a booked job. That makes scaling impossible.",
+              fix: "Gufy builds full-funnel tracking — CPL, booking rate, cost per installed job, and ROAS — so every dollar has an answer.",
+            },
+            warn: {
+              icon: "🔍",
+              title: "Partial tracking limits your scaling",
+              body: "Knowing CPL is helpful but not knowing your full cost per booked job means you're guessing on budget decisions.",
+              fix: "Gufy builds a live dashboard so you see exactly where every lead and revenue dollar came from.",
+            },
+            good: {
+              icon: "✅",
+              title: "Tracking is solid — great",
+              body: "You're making data-driven decisions. Gufy builds on this with full-funnel attribution and ROAS optimization.",
+              fix: null,
+            },
+          },
+          7: {
+            bad: {
+              icon: "📉",
+              title: "Feast-or-famine is draining your business",
+              body: "Unpredictable lead flow makes it impossible to manage crews, materials, and cash flow. Slow months eat all your profit from busy months.",
+              fix: "Gufy builds an always-on lead system — consistent, predictable new inquiries every month regardless of season.",
+            },
+            warn: {
+              icon: "🌊",
+              title: "Slow months are costing you real money",
+              body: "With proactive off-season campaigns, most flooring contractors can cut slow-period revenue drops by 50–70%.",
+              fix: "Gufy maps your campaign calendar 90 days ahead so you're never scrambling to fill the schedule.",
+            },
+            good: {
+              icon: "✅",
+              title: "Predictable pipeline — strong foundation",
+              body: "Consistency is the foundation of a scalable business. Gufy helps you grow from this stable base.",
+              fix: null,
+            },
+          },
+        };
+
+        function getTag(val) {
+          if (val >= 3) return "good";
+          if (val >= 2) return "warn";
+          return "bad";
+        }
+
+        function showResult() {
+          document
+            .querySelectorAll(".question-panel")
+            .forEach((p) => p.classList.remove("active"));
+          qFooter.style.display = "none";
+          document.getElementById("progress-wrap").style.display = "none";
+
+          let total = 0;
+          categories.forEach((c) => {
+            const a = answers[c.q] || 1;
+            total += ((a - 1) / 3) * c.weight;
+          });
+          total = Math.round(total);
+
+          let grade, sub;
+          if (total >= 80) {
+            grade = "🏆 Strong Pipeline";
+            sub =
+              "Your lead system is well-built. Gufy can help optimize ROAS and scale what's already working.";
+          } else if (total >= 55) {
+            grade = "⚠️ Room to Grow";
+            sub =
+              "You have some solid pieces in place, but several gaps are costing you jobs every month.";
+          } else if (total >= 30) {
+            grade = "🔴 Significant Gaps";
+            sub =
+              "Your pipeline has real holes. Contractors in your market are capturing the leads you're missing.";
+          } else {
+            grade = "🚨 Pipeline at Risk";
+            sub =
+              "Without structural changes, unpredictable revenue will stay the norm. The good news: these are fixable fast.";
+          }
+
+          document.getElementById("result-panel").classList.add("active");
+
+          const fill = document.getElementById("score-ring-fill");
+          const scoreColor =
+            total >= 80
+              ? "var(--green)"
+              : total >= 55
+                ? "var(--amber)"
+                : "var(--red)";
+          fill.style.stroke = scoreColor;
+          let disp = 0;
+          const el = document.getElementById("score-display");
+          el.style.color = scoreColor;
+          const iv = setInterval(() => {
+            disp = Math.min(disp + 2, total);
+            el.textContent = disp;
+            if (disp >= total) clearInterval(iv);
+          }, 18);
+          setTimeout(() => {
+            fill.style.strokeDashoffset = 377 - (total / 100) * 377;
+          }, 100);
+
+          document.getElementById("score-grade").textContent = grade;
+          document.getElementById("score-sub").textContent = sub;
+
+          const bList = document.getElementById("breakdown-list");
+          bList.innerHTML = "";
+          categories.forEach((c) => {
+            const a = answers[c.q] || 1;
+            const pct = Math.round(((a - 1) / 3) * 100);
+            const tag = getTag(a - 1);
+            const label =
+              tag === "good"
+                ? "Strong"
+                : tag === "warn"
+                  ? "Needs Work"
+                  : "Critical";
+            const item = document.createElement("div");
+            item.className = "breakdown-item tag-" + tag;
+            item.innerHTML = `<span class="bi-label">${c.label}</span><span class="bi-score">${label}</span><div class="bi-bar-row"><div class="bi-bar-track"><div class="bi-bar-fill" style="width:0%" data-w="${pct}%"></div></div></div>`;
+            bList.appendChild(item);
+          });
+          setTimeout(() => {
+            document.querySelectorAll(".bi-bar-fill").forEach((b) => {
+              b.style.width = b.dataset.w;
+            });
+          }, 200);
+
+          const iList = document.getElementById("insights-list");
+          iList.innerHTML = "";
+          categories.forEach((c) => {
+            const a = answers[c.q] || 1;
+            const tag = getTag(a - 1);
+            const data = insights[c.q][tag];
+            if (!data) return;
+            const card = document.createElement("div");
+            card.className = "insight-card insight-" + tag;
+            card.innerHTML = `<div class="insight-icon">${data.icon}</div><div><h3>${data.title}</h3><p>${data.body}</p>${data.fix ? `<span class="insight-fix">→ How Gufy fixes this: ${data.fix}</span>` : ""}</div>`;
+            iList.appendChild(card);
+          });
+        }
+
+        // Enable debug mode with ?debug=1 in URL
+        const debugMode =
+          new URLSearchParams(window.location.search).get("debug") === "1";
+
+        document
+          .getElementById("lead-form")
+          .addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const name = document.getElementById("lf-name").value.trim();
+            const biz = document.getElementById("lf-biz").value.trim();
+            const phone = document.getElementById("lf-phone").value.trim();
+            const city = document.getElementById("lf-city").value.trim();
+            if (!name || !phone) {
+              alert("Please fill in your name and phone number.");
+              return;
+            }
+
+            let total = 0;
+            categories.forEach((c) => {
+              const a = answers[c.q] || 1;
+              total += ((a - 1) / 3) * c.weight;
+            });
+            total = Math.round(total);
+
+            // Prepare lead data for Zapier/GHL
+            const leadData = {
+              name: name,
+              businessName: biz,
+              phone: phone,
+              city: city,
+              score: total,
+              timestamp: new Date().toISOString(),
+              quizAnswers: answers,
+            };
+
+            if (debugMode) console.log("📤 Sending to Zapier:", leadData);
+
+            // Send to Zapier webhook
+            const zapierWebhookUrl =
+              "https://hooks.zapier.com/hooks/catch/22898586/u7q3fby/";
+            if (zapierWebhookUrl !== "YOUR_ZAPIER_WEBHOOK_URL_HERE") {
+              try {
+                if (debugMode) console.log("🔗 Webhook URL:", zapierWebhookUrl);
+                const response = await fetch(zapierWebhookUrl, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(leadData),
+                  mode: "no-cors",
+                });
+                if (debugMode)
+                  console.log("✅ Webhook response status:", response.status);
+              } catch (err) {
+                if (debugMode) console.error("❌ Webhook error:", err);
+              }
+            }
+
+            // Small delay to ensure webhook fires
+            await new Promise((r) => setTimeout(r, 500));
+
+            // Opens Calendly — replace URL with your actual Calendly link
+            const calendlyUrl = "https://calendly.com/gufy/strategy-call";
+            window.open(calendlyUrl, "_blank", "noopener");
+
+            document.getElementById("result-panel").classList.remove("active");
+            document.getElementById("thankyou-panel").classList.add("active");
+          });
+
+        // Test webhook button
+        if (debugMode) {
+          document.getElementById("test-webhook-btn").style.display = "block";
+          document
+            .getElementById("test-webhook-btn")
+            .addEventListener("click", async function () {
+              const testData = {
+                name: "Test User",
+                businessName: "Test Flooring Co",
+                phone: "(555) 123-4567",
+                city: "Test City, TX",
+                score: 72,
+                timestamp: new Date().toISOString(),
+                quizAnswers: { 1: 3, 2: 4, 3: 2, 4: 1, 5: 2, 6: 3, 7: 2 },
+              };
+              console.log("📤 Testing webhook with:", testData);
+              try {
+                const response = await fetch(
+                  "https://hooks.zapier.com/hooks/catch/22898586/u7q3fby/",
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(testData),
+                    mode: "no-cors",
+                  },
+                );
+                console.log("✅ Test webhook sent! Status:", response.status);
+                alert(
+                  "✅ Test webhook sent! Check Zapier dashboard for the request.",
+                );
+              } catch (err) {
+                console.error("❌ Error:", err);
+                alert(
+                  "❌ Error sending test webhook. Check console (F12) for details.",
+                );
+              }
+            });
+        }
+
+        document.getElementById("retake-btn").addEventListener("click", () => {
+          answers = {};
+          current = 1;
+          document.querySelectorAll(".question-panel").forEach((p) => {
+            p.classList.remove("active");
+            p.querySelectorAll(".option-btn").forEach((b) =>
+              b.classList.remove("selected"),
+            );
+          });
+          document.getElementById("q1").classList.add("active");
+          document.getElementById("result-panel").classList.remove("active");
+          document.getElementById("thankyou-panel").classList.remove("active");
+          qFooter.style.display = "flex";
+          document.getElementById("progress-wrap").style.display = "block";
+          nextBtn.disabled = true;
+          nextBtn.innerHTML = `Next <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+          updateProgress();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      })();
+    </script>
+  </body>
 </html>

@@ -87,11 +87,12 @@
     output.innerHTML = "<p class='info'>⏳ Sending test data...</p>";
     
     const testData = {
-      name: "Test User " + new Date().getTime(),
-      businessName: "Test Flooring Co",
+      firstName: "John",
+      lastName: "Test " + new Date().getTime(),
       phone: "(555) 123-4567",
+      companyName: "Test Flooring Co",
       city: "Test City, TX",
-      score: 72,
+      quizScore: 72,
       timestamp: new Date().toISOString(),
       quizAnswers: { 1: 3, 2: 4, 3: 2, 4: 1, 5: 2, 6: 3, 7: 2 }
     };

@@ -1,0 +1,196 @@
+{
+  "name": "Gufy Quiz → GHL Contact",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gufy-quiz",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-node",
+      "name": "Quiz Form Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "gufy-quiz-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.body.quizScore }}",
+              "operation": "largerEqual",
+              "value2": 70
+            }
+          ]
+        }
+      },
+      "id": "if-hot-node",
+      "name": "Score Check (Hot ≥70)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.body.quizScore }}",
+              "operation": "largerEqual",
+              "value2": 40
+            }
+          ]
+        }
+      },
+      "id": "if-warm-node",
+      "name": "Score Check (Warm ≥40)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [480, 500]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer PASTE_YOUR_GHL_API_KEY_HERE"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"firstName\": \"{{ $('Quiz Form Webhook').item.json.body.firstName }}\",\n  \"lastName\": \"{{ $('Quiz Form Webhook').item.json.body.lastName }}\",\n  \"phone\": \"{{ $('Quiz Form Webhook').item.json.body.phone }}\",\n  \"companyName\": \"{{ $('Quiz Form Webhook').item.json.body.companyName }}\",\n  \"city\": \"{{ $('Quiz Form Webhook').item.json.body.city }}\",\n  \"source\": \"Gufy Flooring Quiz\",\n  \"tags\": [\"flooring-quiz-lead\", \"hot-lead\"],\n  \"customFields\": [\n    {\n      \"key\": \"quiz_score\",\n      \"field_value\": \"{{ $('Quiz Form Webhook').item.json.body.quizScore }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "ghl-hot-node",
+      "name": "GHL — Create Hot Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [720, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer PASTE_YOUR_GHL_API_KEY_HERE"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"firstName\": \"{{ $('Quiz Form Webhook').item.json.body.firstName }}\",\n  \"lastName\": \"{{ $('Quiz Form Webhook').item.json.body.lastName }}\",\n  \"phone\": \"{{ $('Quiz Form Webhook').item.json.body.phone }}\",\n  \"companyName\": \"{{ $('Quiz Form Webhook').item.json.body.companyName }}\",\n  \"city\": \"{{ $('Quiz Form Webhook').item.json.body.city }}\",\n  \"source\": \"Gufy Flooring Quiz\",\n  \"tags\": [\"flooring-quiz-lead\", \"warm-lead\"],\n  \"customFields\": [\n    {\n      \"key\": \"quiz_score\",\n      \"field_value\": \"{{ $('Quiz Form Webhook').item.json.body.quizScore }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "ghl-warm-node",
+      "name": "GHL — Create Warm Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [720, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer PASTE_YOUR_GHL_API_KEY_HERE"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"firstName\": \"{{ $('Quiz Form Webhook').item.json.body.firstName }}\",\n  \"lastName\": \"{{ $('Quiz Form Webhook').item.json.body.lastName }}\",\n  \"phone\": \"{{ $('Quiz Form Webhook').item.json.body.phone }}\",\n  \"companyName\": \"{{ $('Quiz Form Webhook').item.json.body.companyName }}\",\n  \"city\": \"{{ $('Quiz Form Webhook').item.json.body.city }}\",\n  \"source\": \"Gufy Flooring Quiz\",\n  \"tags\": [\"flooring-quiz-lead\", \"cold-lead\"],\n  \"customFields\": [\n    {\n      \"key\": \"quiz_score\",\n      \"field_value\": \"{{ $('Quiz Form Webhook').item.json.body.quizScore }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "ghl-cold-node",
+      "name": "GHL — Create Cold Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [720, 620]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"success\", \"message\": \"Lead received\" }",
+        "options": {}
+      },
+      "id": "respond-node",
+      "name": "Respond to Quiz",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [960, 300]
+    }
+  ],
+  "connections": {
+    "Quiz Form Webhook": {
+      "main": [
+        [
+          { "node": "Score Check (Hot ≥70)", "type": "main", "index": 0 },
+          { "node": "Respond to Quiz", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Score Check (Hot ≥70)": {
+      "main": [
+        [{ "node": "GHL — Create Hot Lead", "type": "main", "index": 0 }],
+        [{ "node": "Score Check (Warm ≥40)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Score Check (Warm ≥40)": {
+      "main": [
+        [{ "node": "GHL — Create Warm Lead", "type": "main", "index": 0 }],
+        [{ "node": "GHL — Create Cold Lead", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-04-13T00:00:00.000Z",
+  "versionId": "1"
+}

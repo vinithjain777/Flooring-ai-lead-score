@@ -1604,13 +1604,19 @@
             });
             total = Math.round(total);
 
-            // Prepare lead data for Zapier/GHL
+            // Parse name into first and last
+            const nameParts = name.trim().split(/\s+/);
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+
+            // Prepare lead data for n8n workflow (matches GHL API format)
             const leadData = {
-              name: name,
-              businessName: biz,
+              firstName: firstName,
+              lastName: lastName,
               phone: phone,
+              companyName: biz,
               city: city,
-              score: total,
+              quizScore: total,
               timestamp: new Date().toISOString(),
               quizAnswers: answers,
             };

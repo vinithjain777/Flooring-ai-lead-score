@@ -41,7 +41,7 @@ With your actual API key:
 1. The webhook URL is already configured in your app files
 2. Your n8n webhook URL is:
    ```
-   http://localhost:5678/webhook-test/7402bc39-8eef-47af-9a4b-3522fc917d3a
+   http://localhost:5678/webhook/gufy-quiz
    ```
 3. Make sure this matches in your n8n Quiz Form Webhook node
 
@@ -54,8 +54,8 @@ With your actual API key:
 ### Step 6: Update App Webhook URL
 
 **Already configured in:**
-- index.html (line 1637): `http://localhost:5678/webhook-test/7402bc39-8eef-47af-9a4b-3522fc917d3a`
-- webhook-test.html (line 54): `http://localhost:5678/webhook-test/7402bc39-8eef-47af-9a4b-3522fc917d3a`
+- index.html (line 1637): `http://localhost:5678/webhook/gufy-quiz`
+- webhook-test.html (line 54): `http://localhost:5678/webhook/gufy-quiz`
 
 ✅ **No changes needed — URLs are already updated!**
 

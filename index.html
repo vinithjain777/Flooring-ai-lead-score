@@ -1620,20 +1620,20 @@
             // ===========================================================
             // WEBHOOK CONFIGURATION - Easy to switch providers
             // ===========================================================
-            // Change this to "n8n" to use n8n instead of Zapier
-            const WEBHOOK_PROVIDER = "zapier";
+            // Change this to "zapier" to use Zapier instead of n8n
+            const WEBHOOK_PROVIDER = "n8n";
             
             let webhookUrl = "";
             if (WEBHOOK_PROVIDER === "zapier") {
               webhookUrl = "https://hooks.zapier.com/hooks/catch/22898586/u7q3fby/";
             } else if (WEBHOOK_PROVIDER === "n8n") {
-              // Update this to your n8n webhook URL
-              webhookUrl = "https://your-n8n-instance.com/webhook/flooring-leads";
+              // n8n webhook URL
+              webhookUrl = "http://localhost:5678/webhook-test/7402bc39-8eef-47af-9a4b-3522fc917d3a";
             }
             
             if (debugMode) console.log("📌 Webhook provider:", WEBHOOK_PROVIDER);
 
-            if (webhookUrl && webhookUrl !== "https://your-n8n-instance.com/webhook/flooring-leads") {
+            if (webhookUrl && webhookUrl !== "YOUR_PLACEHOLDER") {
               try {
                 if (debugMode) console.log("🔗 Webhook URL:", webhookUrl);
                 console.log("⏳ Webhook call started...");

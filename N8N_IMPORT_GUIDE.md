@@ -36,14 +36,14 @@ With your actual API key:
 - ✅ GHL — Create Warm Lead
 - ✅ GHL — Create Cold Lead
 
-### Step 4: Get Your Webhook URL
+### Step 4: Confirm Your Webhook URL
 
-1. Click on **"Quiz Form Webhook"** node
-2. Click **"Open in Browser"** or copy the webhook URL
-3. Your URL will be:
+1. The webhook URL is already configured in your app files
+2. Your n8n webhook URL is:
    ```
-   http://localhost:5678/webhook/gufy-quiz
+   http://localhost:5678/webhook-test/7402bc39-8eef-47af-9a4b-3522fc917d3a
    ```
+3. Make sure this matches in your n8n Quiz Form Webhook node
 
 ### Step 5: Activate Workflow
 
@@ -53,17 +53,11 @@ With your actual API key:
 
 ### Step 6: Update App Webhook URL
 
-If your n8n webhook URL is different, update:
+**Already configured in:**
+- index.html (line 1637): `http://localhost:5678/webhook-test/7402bc39-8eef-47af-9a4b-3522fc917d3a`
+- webhook-test.html (line 54): `http://localhost:5678/webhook-test/7402bc39-8eef-47af-9a4b-3522fc917d3a`
 
-**In index.html** (around line 1628):
-```javascript
-webhookUrl = "http://localhost:5678/webhook/gufy-quiz";
-```
-
-**In webhook-test.html** (around line 49):
-```javascript
-const N8N_URL = "http://localhost:5678/webhook/gufy-quiz";
-```
+✅ **No changes needed — URLs are already updated!**
 
 ---
 
